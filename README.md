@@ -1,7 +1,5 @@
 # Team13_BE
 
----
-
 <div align="center">
     <img alt="fundering" src="https://github.com/Step3-kakao-tech-campus/Team13_BE/assets/79629515/f97d4de1-4fb5-4de4-ab99-18203287a98f" width="40%">
 </div>
@@ -71,13 +69,9 @@
 
 ## 카카오 테크 캠퍼스 3단계 진행 보드
 
----
-
 </br>
 
 ## 배포와 관련하여
-
----
 
 ```
 
@@ -93,9 +87,6 @@ ex ) AWS(아마존), GCP(구글), Azure(마이크로소프트), Cloudtype
 
 ```
 ## Notice
-
----
-
 
 ```
 필요 산출물들은 수료 기준에 영향을 주는 것은 아니지만, 
@@ -113,8 +104,6 @@ ex ) AWS(아마존), GCP(구글), Azure(마이크로소프트), Cloudtype
 </br>
 
 ## 필요 산출물
-
----
 
 <details>
 <summary>Step3. Week-1</summary>
@@ -305,9 +294,9 @@ ex ) AWS(아마존), GCP(구글), Azure(마이크로소프트), Cloudtype
 
 ---
 
-## **과제 상세 : 수강생들이 과제를 진행할 때, 유념해야할 것**
+<br>
 
----
+## **과제 상세 : 수강생들이 과제를 진행할 때, 유념해야할 것**
 
 
 ```
@@ -323,7 +312,6 @@ UI 컴포넌트의 명칭과 이를 구현하는 능력은 필수적인 커뮤�
 
 ## **코드리뷰 관련: review branch로 PR시, 아래 내용을 포함하여 코멘트 남겨주세요.**
 
----
 
 **1. PR 제목과 내용을 아래와 같이 작성 해주세요.**
 
