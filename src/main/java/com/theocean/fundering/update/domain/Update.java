@@ -27,18 +27,18 @@ public class Update {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "order")
-    private int order;
+    @Column(name = "update_order")
+    private Integer updateOrder;
 
     public Update(Post post, User user, String title, String content) {
         this.post = post;
