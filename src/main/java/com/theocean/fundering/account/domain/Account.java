@@ -25,10 +25,12 @@ public class Account {
     private Long postId;
 
     @Column(name = "funding_amount", nullable = false)
-    private int fundingAmount;
+    private Integer fundingAmount;
 
     @Builder
-    public Account(int fundingAmount) {
+    public Account(Integer fundingAmount) {
+        this.userId = userId;
+        this.postId = postId;
         this.fundingAmount = fundingAmount;
     }
 
