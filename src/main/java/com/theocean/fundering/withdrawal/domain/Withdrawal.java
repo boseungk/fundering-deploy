@@ -12,9 +12,11 @@ import java.util.Objects;
 import com.theocean.fundering.user.domain.User;
 import com.theocean.fundering.post.domain.Post;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "Withdrawal")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Withdrawal {
@@ -42,7 +44,7 @@ public class Withdrawal {
 
     // 출금액
     @Column(name = "withdrawalAmount", nullable = false)
-    private Double withdrawalAmount;
+    private Integer withdrawalAmount;
 
     // 신청일자
     @CreatedDate
@@ -60,14 +62,13 @@ public class Withdrawal {
     // 생성자
     @Builder
     public Withdrawal(User user, Post post, String usage, String depositAccount,
-                      Double withdrawalAmount, Boolean isApproved, LocalDateTime approvalDate) {
+                      Integer withdrawalAmount, Boolean isApproved) {
         this.user = user;
         this.post = post;
         this.usage = usage;
         this.depositAccount = depositAccount;
         this.withdrawalAmount = withdrawalAmount;
         this.isApproved = isApproved;
-        this.approvalDate = approvalDate;
     }
 
     // Setter Methods

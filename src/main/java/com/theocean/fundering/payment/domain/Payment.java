@@ -12,9 +12,11 @@ import java.util.Objects;
 import com.theocean.fundering.user.domain.User;
 import com.theocean.fundering.post.domain.Post;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "Payment")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
@@ -34,16 +36,16 @@ public class Payment {
 
     // 결제금액
     @Column(name = "amount", nullable = false)
-    private Double amount;
+    private Integer amount;
 
     // 결제일시
     @CreatedDate
-    @Column(name = "paymentDate", nullable = false)
+    @Column(name = "paymentDate")
     private LocalDateTime paymentDate;
 
     // 생성자
     @Builder
-    public Payment(User user, Post post, Double amount) {
+    public Payment(User user, Post post, Integer amount) {
         this.user = user;
         this.post = post;
         this.amount = amount;

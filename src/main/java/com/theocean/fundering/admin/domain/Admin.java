@@ -1,9 +1,6 @@
 package com.theocean.fundering.admin.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.persistence.*;
 
@@ -14,25 +11,30 @@ import com.theocean.fundering.account.domain.Account;
 @Entity
 @Table(name = "Admin")
 @Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "adminId")
-    private Long id; // PK
+    @EqualsAndHashCode.Include
+    private Long id;
 
+    // 유저
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    private User user; // 유저
+    private User user;
 
+    // 게시물
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postId")
-    private Post post; // 게시물
+    private Post post;
 
+    // 계좌
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accountId")
-    private Account account; // 계좌
+    private Account account;
 
     // 생성자
     @Builder
