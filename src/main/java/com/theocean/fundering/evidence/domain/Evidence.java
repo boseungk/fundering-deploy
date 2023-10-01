@@ -1,12 +1,11 @@
 package com.theocean.fundering.evidence.domain;
 
+import com.theocean.fundering.withdrawal.domain.Withdrawal;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.theocean.fundering.withdrawal.domain.Withdrawal;
 
 import java.util.Objects;
 
