@@ -42,6 +42,4 @@ public class Admin {
         this.account = account;
     }
 
-    // Setter methods
-
 }

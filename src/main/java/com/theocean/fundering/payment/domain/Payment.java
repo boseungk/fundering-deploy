@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import com.theocean.fundering.user.domain.User;
 import com.theocean.fundering.post.domain.Post;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "Payment")
@@ -31,22 +33,33 @@ public class Payment {
     private Post post;
 
     // 결제금액
-    @Column(name = "amount")
+    @Column(name = "amount", nullable = false)
     private Double amount;
 
     // 결제일시
-    @Column(name = "paymentDate")
+    @CreatedDate
+    @Column(name = "paymentDate", nullable = false)
     private LocalDateTime paymentDate;
 
     // 생성자
     @Builder
-    public Payment(User user, Post post, Double amount, LocalDateTime paymentDate) {
+    public Payment(User user, Post post, Double amount) {
         this.user = user;
         this.post = post;
         this.amount = amount;
-        this.paymentDate = paymentDate;
     }
 
-    // Setter methods
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return Objects.equals(id, payment.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }
