@@ -30,9 +30,11 @@ public class Payment {
     @JoinColumn(name = "postId")
     private Post post;
 
+    // 결제금액
     @Column(name = "amount")
     private Double amount;
 
+    // 결제일시
     @Column(name = "paymentDate")
     private LocalDateTime paymentDate;
 
@@ -46,19 +48,5 @@ public class Payment {
     }
 
     // Setter methods
-    public void updateUser(User user) {
-        this.user = user;
-    }
 
-    public void updatePost(Post post) {
-        this.post = post;
-    }
-
-    public void updateAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public void updatePaymentDate(LocalDateTime paymentDate) {
-        this.paymentDate = paymentDate;
-    }
 }

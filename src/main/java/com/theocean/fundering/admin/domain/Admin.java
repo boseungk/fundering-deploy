@@ -2,9 +2,14 @@ package com.theocean.fundering.admin.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+
+import com.theocean.fundering.user.domain.User;
+import com.theocean.fundering.post.domain.Post;
+import com.theocean.fundering.account.domain.Account;
 
 @Entity
 @Table(name = "Admin")
@@ -29,6 +34,14 @@ public class Admin {
     @JoinColumn(name = "accountId")
     private Account account; // 계좌
 
-    // 연관관계 편의 메서드
+    // 생성자
+    @Builder
+    public Admin(User user, Post post, Account account) {
+        this.user = user;
+        this.post = post;
+        this.account = account;
+    }
+
+    // Setter methods
 
 }

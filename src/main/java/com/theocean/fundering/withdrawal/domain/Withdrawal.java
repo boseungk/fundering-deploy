@@ -34,7 +34,7 @@ public class Withdrawal {
     @Column(name = "usage")
     private String usage;
 
-    // 입금계좌
+    // 출금계좌
     @Column(name = "depositAccount")
     private String depositAccount;
 
@@ -54,6 +54,7 @@ public class Withdrawal {
     @Column(name = "approvalDate", nullable = true)
     private LocalDateTime approvalDate;
 
+    // 생성자
     @Builder
     public Withdrawal(User user, Post post, String usage, String depositAccount,
                       Double withdrawalAmount, LocalDateTime applicationDate,
@@ -85,8 +86,8 @@ public class Withdrawal {
         this.applicationDate = applicationDate;
     }
 
-    public void updateApproved(boolean approved) {
-        this.approved = approved;
+    public void updateIsApproved(boolean isApproved) {
+        this.isApproved = isApproved;
     }
 
     public void updateApprovalDate(LocalDateTime approvalDate) {
