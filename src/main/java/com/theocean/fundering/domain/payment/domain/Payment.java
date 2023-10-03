@@ -1,7 +1,8 @@
 package com.theocean.fundering.domain.payment.domain;
 
+import com.theocean.fundering.domain.global.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
-import com.theocean.fundering.domain.user.domain.User;
+import com.theocean.fundering.domain.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,39 +15,32 @@ import java.util.Objects;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity
-@Table(name = "Payment")
-@EntityListeners(AuditingEntityListener.class)
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "Payment")
+@Entity
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "paymentId")
-    private Long id;
+    private Long paymentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User user;
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postId")
     private Post post;
 
     // 결제금액
-    @Column(name = "amount", nullable = false)
+    @Column(nullable = false)
     private Integer amount;
-
-    // 결제일시
-    @CreatedDate
-    @Column(name = "paymentDate")
-    private LocalDateTime paymentDate;
 
     // 생성자
     @Builder
-    public Payment(User user, Post post, Integer amount) {
-        this.user = user;
+    public Payment(Member member, Post post, Integer amount) {
+        this.member = member;
         this.post = post;
         this.amount = amount;
     }
@@ -54,14 +48,12 @@ public class Payment {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Payment payment = (Payment) o;
-        return Objects.equals(id, payment.id);
+        if (!(o instanceof Payment payment)) return false;
+        return Objects.equals(paymentId, payment.paymentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(paymentId);
     }
-
 }

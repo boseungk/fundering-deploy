@@ -1,7 +1,8 @@
 package com.theocean.fundering.domain.update.domain;
 
+import com.theocean.fundering.domain.global.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
-import com.theocean.fundering.domain.user.domain.User;
+import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,10 +16,9 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "updates")
+@Table(name = "update")
 public class Update {
     @Id
-    @Column(name = "update_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long updateId;
 
@@ -26,24 +26,21 @@ public class Update {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private Member member;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(name = "content", nullable = false)
+    @Column(nullable = false)
     private String content;
 
-    @CreatedDate
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
 
-    @Column(name = "update_order")
+    @Column(nullable = false)
     private Integer updateOrder;
 
-    public Update(Post post, User user, String title, String content) {
+    public Update(Post post, Member member, String title, String content) {
         this.post = post;
-        this.user = user;
+        this.member = member;
         this.title = title;
         this.content = content;
     }

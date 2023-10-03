@@ -1,6 +1,7 @@
-package com.theocean.fundering.domain.user.domain;
+package com.theocean.fundering.domain.member.domain;
 
-import com.theocean.fundering.user.domain.constant.UserRole;
+import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.domain.member.domain.constant.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,11 +14,11 @@ import java.util.Objects;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "user",
+@Table(name = "member",
     indexes = @Index(columnList = "email", unique = true)
 )
 @Entity
-public class User {
+public class Member{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -35,18 +36,6 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
 
-    /*
-        AuditingEntity로 리팩토링 예정
-    */
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt;
-
     public void changeNickname(String nickname){
         this.nickname = nickname;
     }
@@ -56,7 +45,7 @@ public class User {
     }
 
     @Builder
-    public User(String nickname, String password, String email, UserRole userRole) {
+    public Member(String nickname, String password, String email, UserRole userRole) {
         this.nickname = nickname;
         this.password = password;
         this.email = email;
@@ -66,8 +55,8 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return Objects.equals(userId, user.userId);
+        if (!(o instanceof Member member)) return false;
+        return Objects.equals(userId, member.userId);
     }
 
     @Override
