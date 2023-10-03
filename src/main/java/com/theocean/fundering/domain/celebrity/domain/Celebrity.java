@@ -18,7 +18,7 @@ import java.util.Objects;
         indexes = @Index(columnList = "celebName")
 )
 @Entity
-public class Celebrity{
+public class Celebrity extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long celebId;

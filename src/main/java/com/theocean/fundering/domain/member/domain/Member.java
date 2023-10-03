@@ -18,7 +18,7 @@ import java.util.Objects;
     indexes = @Index(columnList = "email", unique = true)
 )
 @Entity
-public class Member{
+public class Member extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
