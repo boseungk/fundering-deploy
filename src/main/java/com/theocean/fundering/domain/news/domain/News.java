@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.update.domain;
+package com.theocean.fundering.domain.news.domain;
 
 import com.theocean.fundering.domain.global.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
@@ -7,20 +7,19 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "update")
-public class Update extends AuditingFields {
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "news")
+public class News extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long updateId;
+    private Long newsId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
@@ -36,9 +35,9 @@ public class Update extends AuditingFields {
 
 
     @Column(nullable = false)
-    private Integer updateOrder;
+    private Integer newsOrder;
 
-    public Update(Post post, Member member, String title, String content) {
+    public News(Post post, Member member, String title, String content) {
         this.post = post;
         this.member = member;
         this.title = title;
@@ -48,12 +47,12 @@ public class Update extends AuditingFields {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Update update)) return false;
-        return Objects.equals(updateId, update.updateId);
+        if (!(o instanceof News news)) return false;
+        return Objects.equals(newsId, news.newsId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(updateId);
+        return Objects.hash(newsId);
     }
 }
