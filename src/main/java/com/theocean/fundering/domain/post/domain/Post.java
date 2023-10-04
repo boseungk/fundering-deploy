@@ -2,8 +2,8 @@ package com.theocean.fundering.domain.post.domain;
 
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.comment.domain.Comment;
-import com.theocean.fundering.domain.user.domain.User;
+import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,23 +20,19 @@ import java.util.Objects;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="post")
-public class Post {
+public class Post extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
 
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User writer;
+    private Member writer;
 
 
-    @Column(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "celebId")
-    private Celebrity celeb;
+    private Celebrity celebrity;
 
     @Column(nullable = false)
     private String title;
@@ -44,13 +40,6 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
 
     @Column
     private String thumbnail;
@@ -66,12 +55,12 @@ public class Post {
     private LocalDateTime deadline;
 
     @Column
-    private int order;
+    private int postOrder;
 
     @Builder
-    public Post(User writer, Celebrity celeb, String title, String content, String thumbnail){
+    public Post(Member writer, Celebrity celebrity, String title, String content, String thumbnail){
         this.writer = writer;
-        this.celeb = celeb;
+        this.celebrity = celebrity;
         this.title = title;
         this.content = content;
         this.thumbnail = thumbnail;

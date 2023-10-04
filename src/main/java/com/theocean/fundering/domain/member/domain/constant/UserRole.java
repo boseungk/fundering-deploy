@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.user.domain.constant;
+package com.theocean.fundering.domain.member.domain.constant;
 
 public enum UserRole {
     USER_ROLE,
