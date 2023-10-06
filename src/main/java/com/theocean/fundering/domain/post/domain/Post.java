@@ -2,14 +2,12 @@ package com.theocean.fundering.domain.post.domain;
 
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 

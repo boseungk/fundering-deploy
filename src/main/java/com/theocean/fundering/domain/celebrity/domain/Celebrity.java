@@ -3,7 +3,7 @@ package com.theocean.fundering.domain.celebrity.domain;
 import com.theocean.fundering.celebrity.domain.constant.CelebGender;
 import com.theocean.fundering.celebrity.domain.constant.CelebType;
 import com.theocean.fundering.domain.follow.domain.Follow;
-import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.*;

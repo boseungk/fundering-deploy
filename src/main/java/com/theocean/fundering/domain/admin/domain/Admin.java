@@ -1,7 +1,7 @@
 package com.theocean.fundering.domain.admin.domain;
 
 import com.theocean.fundering.domain.account.domain.Account;
-import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.member.domain.Member;
 import lombok.*;

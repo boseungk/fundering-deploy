@@ -1,13 +1,10 @@
 package com.theocean.fundering.domain.member.domain;
 
-import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.member.domain.constant.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -21,7 +18,7 @@ import java.util.Objects;
 public class Member extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
     @Setter
     @Column(nullable = false, length = 15)
@@ -36,6 +33,10 @@ public class Member extends AuditingFields {
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
 
+    private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+
+    private String refreshToken; // 리프레시 토큰
+
     public void changeNickname(String nickname){
         this.nickname = nickname;
     }
@@ -44,8 +45,13 @@ public class Member extends AuditingFields {
         this.password = password;
     }
 
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
+
     @Builder
-    public Member(String nickname, String password, String email, UserRole userRole) {
+    public Member(Long id, String nickname, String password, String email, UserRole userRole) {
+        this.id = id;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
@@ -56,11 +62,11 @@ public class Member extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Member member)) return false;
-        return Objects.equals(userId, member.userId);
+        return Objects.equals(id, member.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(id);
     }
 }
