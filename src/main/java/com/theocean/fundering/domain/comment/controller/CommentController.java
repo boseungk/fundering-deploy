@@ -21,7 +21,7 @@ public class CommentController {
     // (기능) 댓글 작성
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<?> createComment(@RequestBody @Valid CommentRequest.saveDTO commentRequest, @PathVariable long postId) {
-        // TODO: memberId 부분은 유저 구현 이후 리팩토링 예정
+        // TODO: memberId 부분은 authentication를 통해 작성자 확인 필요
         Comment comment = commentService.createComment(1L, postId, commentRequest);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
@@ -34,5 +34,13 @@ public class CommentController {
 
         Map<String, Object> response = commentService.getCommentsDtoByPostId(postId, PageRequest.of(pageIndex, pageSize));
         return ResponseEntity.ok(ApiUtils.success(response));
+    }
+
+    // (기능) 댓글 삭제
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable long postId, @PathVariable long commentId) {
+        // TODO: authentication를 통해 작성자 확인 필요
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok(ApiUtils.success(null));
     }
 }

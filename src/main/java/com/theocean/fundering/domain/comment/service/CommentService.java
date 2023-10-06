@@ -92,4 +92,12 @@ public class CommentService {
         return response;
     }
 
+    // (기능) 댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다: " + commentId));
+
+        comment.updateIsDeleted(true);
+    }
 }
