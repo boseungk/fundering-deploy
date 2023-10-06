@@ -41,9 +41,9 @@ public class Comment extends AuditingFields {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    // 대댓글 여부
+    // 대댓글 여부 - true이면 부모댓글 즉, 대댓글이 없는 것이다.
     @Column(nullable = false)
-    private boolean isReply;
+    private boolean isParentComment;
 
     /*
         commentOrder는 댓글이 생성될 때 부여받는 순서이다.
@@ -58,7 +58,7 @@ public class Comment extends AuditingFields {
 
     // 대댓글 수
     @Column(nullable = false)
-    private int replyCount;
+    private int childCommentCount;
 
     @Builder
     public Comment(Member writer, Post post, String content, Long commentOrder) {
@@ -66,9 +66,9 @@ public class Comment extends AuditingFields {
         this.post = post;
         this.content = content;
         this.commentOrder = commentOrder;
-        this.isReply = false;
+        this.isParentComment = true;
         this.parentCommentOrder = null;
-        this.replyCount = 0;
+        this.childCommentCount = 0;
         this.isDeleted = false;
     }
 
@@ -80,20 +80,16 @@ public class Comment extends AuditingFields {
         this.isDeleted = isDeleted;
     }
 
-    public void updateIsReply(Boolean isReply) {
-        this.isReply = isReply;
+    public void updateIsParentComment(Boolean isParentComment) {
+        this.isParentComment = isParentComment;
     }
 
-    public void updateparentCommentOrder(Long parentCommentOrder) {
+    public void updateParentCommentOrder(Long parentCommentOrder) {
         this.parentCommentOrder = parentCommentOrder;
     }
 
-    public void updateCommentOrder(Long order) {
-        this.commentOrder = order;
-    }
-
-    public void increaseReplyCount() {
-        this.replyCount++;
+    public void increaseChildCommentCount() {
+        this.childCommentCount++;
     }
 
     @Override

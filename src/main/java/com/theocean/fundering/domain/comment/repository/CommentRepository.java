@@ -12,13 +12,11 @@ import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    @Query("SELECT MAX(c.commentOrder) FROM Comment c WHERE c.post.postId = :postId")
+    @Query("SELECT COALESCE(MAX(c.commentOrder), 0) FROM Comment c WHERE c.post.postId = :postId")
     Long getLastCommentOrder(@Param("postId") Long postId);
 
     Optional<Comment> findByCommentOrder(Long parentCommentOrder);
 
-//    Page<Comment> findByPost_PostIdOrderByCreatedAt(Long postId, Pageable pageable);
-//    Page<Comment> findByPost_PostIdOrderByParentCommentOrderDescCreatedAtDesc(Long postId, Pageable pageable);
     Page<Comment> findByPost_PostIdOrderByParentCommentOrderAscCommentOrderAsc(Long postId, Pageable pageable);
 
 }

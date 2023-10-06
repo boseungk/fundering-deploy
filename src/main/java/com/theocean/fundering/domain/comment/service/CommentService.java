@@ -27,9 +27,9 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
-    // 댓글 생성
+    // (기능) 댓글 작성
     @Transactional
-    public Comment createComment(Long memberId, Long postId, CommentRequest request) {
+    public Comment createComment(Long memberId, Long postId, CommentRequest.saveDTO request) {
 
         // 댓글 작성 이전 회원과 게시물 존재여부 확인
         Member writer = memberRepository.findById(memberId)
@@ -38,59 +38,51 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다: " + postId));
 
-
         // 댓글 순서 구하는 로직 - 특정 post내에서 가장 최근에 작성된 댓글의 순서 + 1
-        Long commentOrder = (commentRepository.getLastCommentOrder(post.getPostId()) + 1);
-
+        Long commentOrder = commentRepository.getLastCommentOrder(post.getPostId()) + 1;
 
         // RequestBody value
         Long parentCommentOrder = request.getParentCommentOrder();
         String content = request.getContent();
 
-        Comment newComment;
+        // Comment 객체 기본 생성
+        Comment newComment = Comment.builder()
+                .writer(writer)
+                .post(post)
+                .content(content)
+                .commentOrder(commentOrder)
+                .build();
 
         // 대댓글 생성 로직 (부모 댓글이 존재할 경우)
         if (parentCommentOrder != null) {
             Comment parentComment = commentRepository.findByCommentOrder(parentCommentOrder)
-                    .orElseThrow(() -> new IllegalArgumentException("Parent comment not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다: " + parentCommentOrder));
 
-            // 대댓글 생성
-            newComment = Comment.builder()
-                    .writer(writer)
-                    .post(post)
-                    .content(content)
-                    .commentOrder(commentOrder)
-                    .build();
-            newComment.updateparentCommentOrder(parentCommentOrder);
+            newComment.updateParentCommentOrder(parentCommentOrder);
 
             // 부모댓글 업데이트 (대댓글 유무 변경, 대댓글 수 증가)
-            if (!parentComment.isReply()) {
-                parentComment.updateIsReply(true);
+            if (parentComment.isParentComment()) {
+                parentComment.updateIsParentComment(false);
             }
-            parentComment.increaseReplyCount();
-
-
-        } // 댓글 생성 로직 (부모 댓글이 존재하지 않을 경우)
-        else {
-            newComment = Comment.builder()
-                    .writer(writer)
-                    .post(post)
-                    .content(content)
-                    .commentOrder(commentOrder)
-                    .build();
-            newComment.updateparentCommentOrder(commentOrder);
+            parentComment.increaseChildCommentCount();
+        }
+        else { // 일반 댓글 생성 로직 (부모 댓글이 존재하지 않을 경우)
+            newComment.updateParentCommentOrder(commentOrder);
         }
 
         return commentRepository.save(newComment);
     }
 
+
+    // (기능) 댓글 목록 조회
     public Map<String, Object> getCommentsDtoByPostId(long postId, PageRequest pageRequest) {
         Page<Comment> commentsPage = commentRepository.findByPost_PostIdOrderByParentCommentOrderAscCommentOrderAsc(postId, pageRequest);
 
-        // Comment 객체들을 CommentResponse 객체들로 변환합니다.
-        List<CommentResponse> responseDtos = commentsPage.getContent().stream()
-                .map(CommentResponse::new)
+        // Comment 객체들을 CommentResponse.findAllDTO 객체들로 변환
+        List<CommentResponse.findAllDTO> responseDtos = commentsPage.getContent().stream()
+                .map(CommentResponse.findAllDTO::new)
                 .collect(Collectors.toList());
+
 
         boolean isLastPage = commentsPage.isLast();
         Map<String, Object> response = new HashMap<>();
@@ -100,5 +92,4 @@ public class CommentService {
         return response;
     }
 
-    // ... Other service methods
 }
