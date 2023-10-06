@@ -24,11 +24,13 @@ public class PostService {
         postRepository.save(postWriteDTO.toEntity());
     }
 
-    public PostResponse.FindByIdDTO findById(Long id){
-        Post postPS = postRepository.findById(id).orElseThrow();
-        return new PostResponse.FindByIdDTO(postPS);
+    public PostResponse.FindByPostIdDTO findByPostId(Long postId){
+        Post postPS = postRepository.findByPostId(postId).orElseThrow();
+        return new PostResponse.FindByPostIdDTO(postPS);
 
     }
+
+
 
     public List<PostResponse.FindAllDTO> findAll(){
         List<PostResponse.FindAllDTO> postListPS = postRepository.findAll().stream().map(post -> new PostResponse.FindAllDTO(post)).collect(Collectors.toList());

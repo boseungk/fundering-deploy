@@ -4,7 +4,6 @@ import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.domain.Post;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ public class PostResponse {
 
     @Getter
     @Setter
-    public static class FindByIdDTO { // 게시글 열람 DTO
+    public static class FindByPostIdDTO { // 게시글 열람 DTO
         private Long postId;
         private Member writer;
         private Celebrity celebrity;
@@ -26,7 +25,7 @@ public class PostResponse {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
 
-        public FindByIdDTO(Post post){
+        public FindByPostIdDTO(Post post){
             this.postId = post.getPostId();
             this.writer = post.getWriter();
             this.celebrity = post.getCelebrity();
@@ -38,6 +37,20 @@ public class PostResponse {
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
         }
+    }
+
+    @Getter
+    @Setter
+    public static class FindByMemberIdDTO{
+        private Long postId;
+        private Member writer;
+        private Celebrity celebrity;
+        private String title;
+        private String thumbnail;
+        private int targetPrice;
+        private LocalDateTime deadline;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
     }
 
     @Getter
