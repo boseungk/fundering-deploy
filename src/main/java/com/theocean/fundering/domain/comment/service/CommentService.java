@@ -2,12 +2,20 @@ package com.theocean.fundering.domain.comment.service;
 
 import com.theocean.fundering.domain.comment.domain.Comment;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
+import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.repository.CommentRepository;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.domain.Post;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Transactional(readOnly = true)
@@ -74,6 +82,22 @@ public class CommentService {
         }
 
         return commentRepository.save(newComment);
+    }
+
+    public Map<String, Object> getCommentsDtoByPostId(long postId, PageRequest pageRequest) {
+        Page<Comment> commentsPage = commentRepository.findByPost_PostIdOrderByParentCommentOrderAscCommentOrderAsc(postId, pageRequest);
+
+        // Comment 객체들을 CommentResponse 객체들로 변환합니다.
+        List<CommentResponse> responseDtos = commentsPage.getContent().stream()
+                .map(CommentResponse::new)
+                .collect(Collectors.toList());
+
+        boolean isLastPage = commentsPage.isLast();
+        Map<String, Object> response = new HashMap<>();
+        response.put("comments", responseDtos);
+        response.put("isLastPage", isLastPage);
+
+        return response;
     }
 
     // ... Other service methods
