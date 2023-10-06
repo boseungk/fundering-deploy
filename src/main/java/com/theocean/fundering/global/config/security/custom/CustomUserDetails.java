@@ -1,4 +1,4 @@
-package com.theocean.fundering.global.config.security;
+package com.theocean.fundering.global.config.security.custom;
 
 import com.theocean.fundering.domain.member.domain.Member;
 import lombok.Getter;
