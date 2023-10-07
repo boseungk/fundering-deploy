@@ -76,13 +76,6 @@ public class Comment extends AuditingFields {
         this.isDeleted = false;
     }
 
-    public void updateContent(String content) {
-        this.content = content;
-    }
-
-    public void updateIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
 
     public void updateIsParentComment(Boolean isParentComment) {
         this.isParentComment = isParentComment;
