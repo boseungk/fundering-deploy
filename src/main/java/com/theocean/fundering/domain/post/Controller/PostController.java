@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -17,8 +19,11 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/fundings")
-    public ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAll(@RequestParam Long postId, int pageSize){
+        List<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId, pageSize);
+        ApiUtils.ApiResult<?> apiResult = ApiUtils.success(responseDTO);
 
+        return ResponseEntity.ok(apiResult);
     }
 
     @GetMapping("/fundings/{postId}")
@@ -36,15 +41,15 @@ public class PostController {
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
-    @PutMapping("/fundings/{postId}/edit")
-    public ResponseEntity<?> editPost(@PathVariable Long postId, PostRequest.PostWriteDTO postWriteDTO){
-
-    }
-
-    @DeleteMapping("/fundings/{postId}/delete")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId){
-
-    }
+//    @PutMapping("/fundings/{postId}/edit")
+//    public ResponseEntity<?> editPost(@PathVariable Long postId, PostRequest.PostWriteDTO postWriteDTO){
+//
+//    }
+//
+//    @DeleteMapping("/fundings/{postId}/delete")
+//    public ResponseEntity<?> deletePost(@PathVariable Long postId){
+//
+//    }
 
 
 

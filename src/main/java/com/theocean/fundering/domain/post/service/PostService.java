@@ -1,7 +1,9 @@
 package com.theocean.fundering.domain.post.service;
 
 
+import com.querydsl.core.BooleanBuilder;
 import com.theocean.fundering.domain.post.domain.Post;
+import com.theocean.fundering.domain.post.domain.QPost;
 import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.repository.PostRepository;
@@ -31,10 +33,8 @@ public class PostService {
     }
 
 
-
-    public List<PostResponse.FindAllDTO> findAll(){
-        List<PostResponse.FindAllDTO> postListPS = postRepository.findAll().stream().map(post -> new PostResponse.FindAllDTO(post)).collect(Collectors.toList());
-        return postListPS;
+    public List<PostResponse.FindAllDTO> findAll(Long postId, int pageSize){
+        return postRepository.findAll(postId, pageSize);
     }
 
 }

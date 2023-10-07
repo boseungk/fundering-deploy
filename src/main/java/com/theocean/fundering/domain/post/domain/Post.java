@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.post.domain;
 
 
+import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.member.domain.Member;
@@ -39,6 +40,9 @@ public class Post extends AuditingFields {
 
     @Column(nullable = false)
     private String content;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Account account;
 
     @Column
     private String thumbnail;
