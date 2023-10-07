@@ -2,7 +2,6 @@ package com.theocean.fundering.domain.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.theocean.fundering.domain.comment.domain.Comment;
-import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -42,12 +41,11 @@ public class CommentResponse {
         private final boolean isDeleted;
         private final LocalDateTime createdAt;
 
-        public commentsDTO(Comment comment) {
+        public commentsDTO(Comment comment, String writerName, String writerProfile) {
             this.commentId = comment.getCommentId();
-            this.writerId = comment.getWriter().getUserId();
-            this.writerName = comment.getWriter().getNickname();
-            this.writerProfile = "ImageURL_Example";
-//            this.writerProfile = comment.getWriter().getProfileImage();
+            this.writerId = comment.getWriterId();
+            this.writerName = writerName;
+            this.writerProfile = writerProfile;
             this.content = comment.getContent();
             this.parentCommentOrder = comment.getParentCommentOrder();
             this.commentOrder = comment.getCommentOrder();

@@ -2,8 +2,6 @@ package com.theocean.fundering.domain.comment.domain;
 
 
 import com.theocean.fundering.global.utils.AuditingFields;
-import com.theocean.fundering.domain.member.domain.Member;
-import com.theocean.fundering.domain.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,13 +27,13 @@ public class Comment extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
-    // 작성자
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member writer;
+    // 작성자의 식별자
+    @Column(nullable = false)
+    private Long writerId;
 
-    // 게시물
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Post post;
+    // 게시물의 식별자
+    @Column(nullable = false)
+    private Long postId;
 
     // 댓글 내용
     @Column(nullable = false)
@@ -45,9 +43,9 @@ public class Comment extends AuditingFields {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    // 대댓글 여부 - true이면 부모댓글 즉, 대댓글이 없는 것이다.
+    // 대댓글 유무 - true이면 답글이 존재하므로 대댓글임을 의미함
     @Column(nullable = false)
-    private boolean isParentComment;
+    private boolean hasReply;
 
     /*
         commentOrder는 댓글이 생성될 때 부여받는 순서이다.
@@ -65,20 +63,20 @@ public class Comment extends AuditingFields {
     private int childCommentCount;
 
     @Builder
-    public Comment(Member writer, Post post, String content, Long commentOrder) {
-        this.writer = writer;
-        this.post = post;
+    public Comment(Long writerId, Long postId, String content, Long commentOrder) {
+        this.writerId = writerId;
+        this.postId = postId;
         this.content = content;
         this.commentOrder = commentOrder;
-        this.isParentComment = true;
+        this.hasReply = false;
         this.parentCommentOrder = null;
         this.childCommentCount = 0;
         this.isDeleted = false;
     }
 
 
-    public void updateIsParentComment(Boolean isParentComment) {
-        this.isParentComment = isParentComment;
+    public void updatehasReply(Boolean hasReply) {
+        this.hasReply = hasReply;
     }
 
     public void updateParentCommentOrder(Long parentCommentOrder) {
