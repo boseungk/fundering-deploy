@@ -36,7 +36,7 @@ public class CommentResponse {
         private final String content;
         private final Long parentCommentOrder;
         private final Long commentOrder;
-        private final int childCommentCount;
+
 
         @JsonProperty("isDeleted")
         private final boolean isDeleted;
@@ -51,9 +51,12 @@ public class CommentResponse {
             this.content = comment.getContent();
             this.parentCommentOrder = comment.getParentCommentOrder();
             this.commentOrder = comment.getCommentOrder();
-            this.childCommentCount = comment.getChildCommentCount();
             this.isDeleted = comment.isDeleted();
             this.createdAt = comment.getCreatedAt();
+        }
+
+        public boolean getIsDeleted() {
+            return isDeleted;
         }
     }
 }

@@ -89,6 +89,7 @@ public class Comment extends AuditingFields {
         this.childCommentCount++;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

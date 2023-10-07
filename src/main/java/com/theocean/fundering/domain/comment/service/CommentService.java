@@ -55,7 +55,7 @@ public class CommentService {
 
         // 대댓글 생성 로직 (부모 댓글이 존재할 경우)
         if (parentCommentOrder != null) {
-            Comment parentComment = commentRepository.findByCommentOrder(parentCommentOrder)
+            Comment parentComment = commentRepository.findByPostAndCommentOrder(post, parentCommentOrder)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다: " + parentCommentOrder));
 
             newComment.updateParentCommentOrder(parentCommentOrder);
