@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.comment.controller;
 
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
+import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.service.CommentService;
 import com.theocean.fundering.domain.comment.domain.Comment;
 import com.theocean.fundering.global.utils.ApiUtils;
@@ -32,7 +33,7 @@ public class CommentController {
                                          @RequestParam(required = false, defaultValue = "0") int pageIndex,
                                          @RequestParam(required = false, defaultValue = "3") int pageSize) {
 
-        Map<String, Object> response = commentService.getCommentsDtoByPostId(postId, PageRequest.of(pageIndex, pageSize));
+        CommentResponse.findAllDTO response = commentService.getCommentsDtoByPostId(postId, PageRequest.of(pageIndex, pageSize));
         return ResponseEntity.ok(ApiUtils.success(response));
     }
 

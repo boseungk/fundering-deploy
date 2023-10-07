@@ -75,22 +75,17 @@ public class CommentService {
 
 
     // (기능) 댓글 목록 조회
-    public Map<String, Object> getCommentsDtoByPostId(long postId, PageRequest pageRequest) {
+    public CommentResponse.findAllDTO getCommentsDtoByPostId(long postId, PageRequest pageRequest) {
         Page<Comment> commentsPage = commentRepository.findByPost_PostIdOrderByParentCommentOrderAscCommentOrderAsc(postId, pageRequest);
 
-        // Comment 객체들을 CommentResponse.findAllDTO 객체들로 변환
-        List<CommentResponse.findAllDTO> responseDtos = commentsPage.getContent().stream()
-                .map(CommentResponse.findAllDTO::new)
+        // Comment 객체들을 CommentResponse.commentsDTO 객체들로 변환
+        List<CommentResponse.commentsDTO> commentsDtos = commentsPage.getContent().stream()
+                .map(CommentResponse.commentsDTO::new)
                 .collect(Collectors.toList());
 
-
-        boolean isLastPage = commentsPage.isLast();
-        Map<String, Object> response = new HashMap<>();
-        response.put("comments", responseDtos);
-        response.put("isLastPage", isLastPage);
-
-        return response;
+        return new CommentResponse.findAllDTO(commentsDtos, commentsPage.isLast());
     }
+
 
     // (기능) 댓글 삭제
     @Transactional
