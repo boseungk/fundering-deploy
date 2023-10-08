@@ -37,6 +37,8 @@ public class Member extends AuditingFields {
 
     private String refreshToken; // 리프레시 토큰
 
+    private String profileImage; // 프로필 이미지
+
     public void changeNickname(String nickname){
         this.nickname = nickname;
     }
@@ -50,11 +52,12 @@ public class Member extends AuditingFields {
     }
 
     @Builder
-    public Member(Long id, String nickname, String password, String email, UserRole userRole) {
+    public Member(Long id, String nickname, String password, String email, UserRole userRole, String profileImage) {
         this.id = id;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
+        this.profileImage = profileImage;
         this.userRole = userRole;
     }
 
