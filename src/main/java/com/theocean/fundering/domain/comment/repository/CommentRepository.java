@@ -20,4 +20,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c WHERE c.postId = :postId ORDER BY c.parentCommentOrder, c.commentOrder")
     Page<Comment> findByPostIdOrdered(Long postId, Pageable pageable);
 
+    boolean existsByPostIdAndCommentOrder(Long postId, Long commentOrder);
+
+
 }

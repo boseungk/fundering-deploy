@@ -23,7 +23,7 @@ public class CommentController {
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<?> createComment(@RequestBody @Valid CommentRequest.saveDTO commentRequest, @PathVariable long postId) {
         // TODO: memberId 부분은 authentication를 통해 작성자 확인 필요
-        Comment comment = commentService.createComment(1L, postId, commentRequest);
+        commentService.createComment(1L, postId, commentRequest);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
@@ -41,7 +41,8 @@ public class CommentController {
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable long postId, @PathVariable long commentId) {
         // TODO: authentication를 통해 작성자 확인 필요
-        commentService.deleteComment(commentId);
+        Long memberId = 1L;  // 임시 코드, 실제로는 인증 정보에서 가져와야 함
+        commentService.deleteComment(memberId, postId, commentId);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 }

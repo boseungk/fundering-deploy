@@ -19,7 +19,6 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="comment")
 @SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
-@Where(clause = "is_deleted = false")
 public class Comment extends AuditingFields {
 
     // PK
