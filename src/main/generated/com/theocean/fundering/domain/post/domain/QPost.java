@@ -42,15 +42,15 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Long> postId = createNumber("postId", Long.class);
 
-    public final NumberPath<Integer> postOrder = createNumber("postOrder", Integer.class);
-
     public final NumberPath<Integer> targetPrice = createNumber("targetPrice", Integer.class);
 
     public final StringPath thumbnail = createString("thumbnail");
 
     public final StringPath title = createString("title");
 
-    public final com.theocean.fundering.domain.member.domain.QMember writer;
+    public final StringPath writer = createString("writer");
+
+    public final NumberPath<Long> writerId = createNumber("writerId", Long.class);
 
     public QPost(String variable) {
         this(Post.class, forVariable(variable), INITS);
@@ -72,7 +72,6 @@ public class QPost extends EntityPathBase<Post> {
         super(type, metadata, inits);
         this.account = inits.isInitialized("account") ? new com.theocean.fundering.domain.account.domain.QAccount(forProperty("account"), inits.get("account")) : null;
         this.celebrity = inits.isInitialized("celebrity") ? new com.theocean.fundering.domain.celebrity.domain.QCelebrity(forProperty("celebrity")) : null;
-        this.writer = inits.isInitialized("writer") ? new com.theocean.fundering.domain.member.domain.QMember(forProperty("writer")) : null;
     }
 
 }

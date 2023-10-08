@@ -15,7 +15,8 @@ public class PostResponse {
     @Setter
     public static class FindByPostIdDTO { // 게시글 열람 DTO
         private Long postId;
-        private Member writer;
+        private Long writerId;
+        private String writer;
         private Celebrity celebrity;
         private String title;
         private String content;
@@ -31,6 +32,7 @@ public class PostResponse {
 
         public FindByPostIdDTO(Post post){
             this.postId = post.getPostId();
+            this.writerId = post.getWriterId();
             this.writer = post.getWriter();
             this.celebrity = post.getCelebrity();
             this.title = post.getTitle();
@@ -51,7 +53,8 @@ public class PostResponse {
     @Setter
     public static class FindAllDTO{
         private Long postId;
-        private Member writer;
+        private Long writerId;
+        private String writer;
         private Celebrity celebrity;
         private String title;
         private String thumbnail;
@@ -63,6 +66,7 @@ public class PostResponse {
 
         public FindAllDTO(Post post){
             this.postId = post.getPostId();
+            this.writerId = post.getPostId();
             this.writer = post.getWriter();
             this.celebrity = post.getCelebrity();
             this.title = post.getTitle();

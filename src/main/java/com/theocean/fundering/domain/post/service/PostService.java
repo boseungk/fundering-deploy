@@ -32,9 +32,12 @@ public class PostService {
 
     }
 
-
     public List<PostResponse.FindAllDTO> findAll(Long postId, int pageSize){
         return postRepository.findAll(postId, pageSize);
+    }
+
+    public List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId, int pageSize){
+        return postRepository.findAllByWriterId(postId, writerId, pageSize);
     }
 
 }

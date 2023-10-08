@@ -27,10 +27,10 @@ public class Post extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
+    @JoinColumn(name = "userId")
+    private Long writerId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member writer;
-
+    private String writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Celebrity celebrity;
@@ -57,20 +57,20 @@ public class Post extends AuditingFields {
     @DateTimeFormat
     private LocalDateTime deadline;
 
-    @Column
-    private int postOrder;
+
 
     @Builder
-    public Post(Long postId, Member writer, Celebrity celebrity, String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline, int postOrder){
+    public Post(Long postId, Long writerId, String writer, Celebrity celebrity, String title, String content, String thumbnail, int targetPrice, int participants, LocalDateTime deadline){
         this.postId = postId;
+        this.writerId = writerId;
         this.writer = writer;
         this.celebrity = celebrity;
         this.title = title;
         this.content = content;
         this.thumbnail = thumbnail;
         this.targetPrice = targetPrice;
+        this.participants = participants;
         this.deadline = deadline;
-        this.postOrder = postOrder;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.post.Controller;
+package com.theocean.fundering.domain.post.controller;
 
 
 import com.theocean.fundering.domain.post.dto.PostRequest;
@@ -18,15 +18,15 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/fundings")
-    public ResponseEntity<?> findAll(@RequestParam Long postId, int pageSize){
+    @GetMapping("/posts")
+    public ResponseEntity<?> findAll(@RequestParam(value = "postId") Long postId, @RequestParam(value = "pageSize") int pageSize){
         List<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId, pageSize);
         ApiUtils.ApiResult<?> apiResult = ApiUtils.success(responseDTO);
 
         return ResponseEntity.ok(apiResult);
     }
 
-    @GetMapping("/fundings/{postId}")
+    @GetMapping("/posts/{postId}")
     public ResponseEntity<?> findByPostId(@PathVariable Long postId){
         PostResponse.FindByPostIdDTO responseDTO = postService.findByPostId(postId);
         ApiUtils.ApiResult<?> apiResult = ApiUtils.success(responseDTO);
@@ -35,7 +35,7 @@ public class PostController {
 
     }
 
-    @PostMapping("/fundings/write")
+    @PostMapping("/posts/write")
     public ResponseEntity<?> writePost(PostRequest.PostWriteDTO postWriteDTO){
         postService.writePost(postWriteDTO);
         return ResponseEntity.ok(ApiUtils.success(null));

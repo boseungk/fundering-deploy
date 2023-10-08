@@ -15,17 +15,20 @@ public class PostRequest {
     @ToString
     public static class PostWriteDTO { // 게시글 작성 DTO
         private Long postId;
-        private Member writer;
+        private Long writerId;
+        private String writer;
         private Celebrity celebrity;
         private String title;
         private String content;
         private String thumbnail;
         private int targetPrice;
         private LocalDateTime deadline;
+        private LocalDateTime createdAt;
 
         public Post toEntity(){
             return Post.builder()
                     .writer(writer)
+                    .writerId(writerId)
                     .celebrity(celebrity)
                     .title(title)
                     .content(content)
@@ -36,15 +39,17 @@ public class PostRequest {
         }
 
         @Builder
-        public PostWriteDTO(Long postId, Member writer, Celebrity celebrity, String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline){
+        public PostWriteDTO(Long postId, Long writerId, String writer, Celebrity celebrity, String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline){
             this.postId = postId;
             this.writer = writer;
+            this.writerId = writerId;
             this.celebrity = celebrity;
             this.title = title;
             this.content = content;
             this.thumbnail = thumbnail;
             this.targetPrice = targetPrice;
             this.deadline = deadline;
+            this.createdAt = LocalDateTime.now();
         }
 
     }
