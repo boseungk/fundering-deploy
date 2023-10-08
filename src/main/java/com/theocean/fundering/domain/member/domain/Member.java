@@ -33,6 +33,14 @@ public class Member extends AuditingFields {
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
 
+    private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+
+    private String refreshToken; // 리프레시 토큰
+
+    private String profileImage; // 프로필 이미지
+
+    private boolean isAdmin;
+
     public void changeNickname(String nickname){
         this.nickname = nickname;
     }
@@ -41,11 +49,17 @@ public class Member extends AuditingFields {
         this.password = password;
     }
 
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
+
     @Builder
-    public Member(String nickname, String password, String email, UserRole userRole) {
+    public Member(Long userId, String nickname, String password, String email, UserRole userRole, String profileImage) {
+        this.userId = userId;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
+        this.profileImage = profileImage;
         this.userRole = userRole;
     }
 
