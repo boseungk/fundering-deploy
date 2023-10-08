@@ -1,9 +1,9 @@
-package com.theocean.fundering.global.config.security.handler;
+package com.theocean.fundering.global.jwt.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
-import com.theocean.fundering.global.config.security.jwt.JwtProvider;
+import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,16 +23,17 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
+    private final JwtProvider jwtProvider;
 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         String email = extractUsername(authentication);
-        String accessToken = JwtProvider.createAccessToken(email);
-        String refreshToken = JwtProvider.createRefreshToken(email);
+        String accessToken = jwtProvider.createAccessToken(email);
+        String refreshToken = jwtProvider.createRefreshToken(email);
 
-        JwtProvider.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        jwtProvider.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 
         memberRepository.findByEmail(email)
                 .ifPresent(user -> {

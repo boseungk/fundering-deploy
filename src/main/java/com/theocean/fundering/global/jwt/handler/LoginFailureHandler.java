@@ -1,4 +1,4 @@
-package com.theocean.fundering.global.config.security.handler;
+package com.theocean.fundering.global.jwt.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.global.errors.exception.Exception400;
@@ -13,15 +13,12 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 
 import java.io.IOException;
 
-/**
- * JWT 로그인 실패 시 처리하는 핸들러
- * SimpleUrlAuthenticationFailureHandler를 상속받아서 구현
- */
+
 @Slf4j
 @RequiredArgsConstructor
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private final String FAILURE_MESSAGE = "로그인에 실패했습니다.";
+    private final String FAILURE_MESSAGE = "아이디나 비밀번호가 잘못 되었습니다.";
     private final ObjectMapper objectMapper;
 
     @Override
@@ -32,7 +29,7 @@ public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         log.info("로그인에 실패했습니다. 메시지 : {}", exception.getMessage());
-        String result = objectMapper.writeValueAsString(ApiUtils.error(FAILURE_MESSAGE, new Exception400("로그인에 실패했습니다.").status()));
+        String result = objectMapper.writeValueAsString(ApiUtils.error(FAILURE_MESSAGE, new Exception400("아이디나 비밀번호가 잘못 되었습니다.").status()));
         response.getWriter().write(result);
     }
 }

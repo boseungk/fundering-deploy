@@ -1,12 +1,14 @@
-package com.theocean.fundering.global.config.security.jwt;
+package com.theocean.fundering.global.jwt.filter;
 
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.member.domain.Member;
+import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.utils.PasswordUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,34 +23,44 @@ import java.io.IOException;
 
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
-
+    private static final String NO_CHECK_URL = "/login";
     private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository, JwtProvider jwtProvider) {
         super(authenticationManager);
         this.memberRepository = memberRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String refreshToken = JwtProvider.extractRefreshToken(request).orElse(null);
+        // "/login" 요청은 토큰 확인 x
+        if (request.getRequestURI().equals(NO_CHECK_URL)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
+        String refreshToken = jwtProvider.extractRefreshToken(request).orElse(null);
+
+        //refreshToken 존재하면 확인 후 AccessToken 재발행
         if (refreshToken != null) {
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
         }
+        //refreshToken 없으면 AccessToken 확인 후, 해당 이메일 유저 DB에서 조회해서 인증 객체에 저장
         else {
             checkAccessTokenAndAuthentication(request, response, chain);
         }
-
+        // 두 토큰 다 실패하면 다음 필터에서 403 에러
     }
 
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
-        JwtProvider.extractAccessToken(request)
-                .filter(JwtProvider::isTokenValid)
-                .ifPresent(accessToken -> JwtProvider.extractEmail(accessToken)
+        jwtProvider.extractAccessToken(request)
+                .filter(jwtProvider::isAccessTokenValid)
+                .ifPresent(accessToken -> jwtProvider.verifyAccessTokenAndExtractEmail(accessToken)
                         .ifPresent(email -> memberRepository.findByEmail(email)
                                 .ifPresent(this::saveAuthentication)));
 
@@ -59,13 +71,15 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         memberRepository.findByRefreshToken(refreshToken)
                 .ifPresent(member -> {
                     String reIssuedRefreshToken = reIssueRefreshToken(member);
-                    JwtProvider.sendAccessAndRefreshToken(response, JwtProvider.createAccessToken(member.getEmail()),
+                    jwtProvider.sendAccessAndRefreshToken(
+                            response,
+                            jwtProvider.createAccessToken(member.getEmail()),
                             reIssuedRefreshToken);
                 });
     }
 
     private String reIssueRefreshToken(Member member) {
-        String reIssuedRefreshToken = JwtProvider.createRefreshToken(member.getEmail());
+        String reIssuedRefreshToken = jwtProvider.createRefreshToken(member.getEmail());
         member.updateRefreshToken(reIssuedRefreshToken);
         memberRepository.saveAndFlush(member);
         return reIssuedRefreshToken;

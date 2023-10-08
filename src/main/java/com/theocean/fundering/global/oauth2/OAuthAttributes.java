@@ -34,7 +34,7 @@ public class OAuthAttributes {
 
     public Member toEntity(OAuth2UserInfo oauth2UserInfo) {
         return Member.builder()
-                .id(Long.valueOf(oauth2UserInfo.getId()))
+                .userId(Long.valueOf(oauth2UserInfo.getId()))
                 .nickname(oauth2UserInfo.getNickname())
                 .profileImage(oauth2UserInfo.getImageUrl())
                 // .phoneNumber(oauth2UserInfo.getPhoneNumber())

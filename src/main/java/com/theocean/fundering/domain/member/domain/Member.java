@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Member extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     @Setter
     @Column(nullable = false, length = 15)
@@ -39,6 +39,8 @@ public class Member extends AuditingFields {
 
     private String profileImage; // 프로필 이미지
 
+    private boolean isAdmin;
+
     public void changeNickname(String nickname){
         this.nickname = nickname;
     }
@@ -52,8 +54,8 @@ public class Member extends AuditingFields {
     }
 
     @Builder
-    public Member(Long id, String nickname, String password, String email, UserRole userRole, String profileImage) {
-        this.id = id;
+    public Member(Long userId, String nickname, String password, String email, UserRole userRole, String profileImage) {
+        this.userId = userId;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
@@ -65,11 +67,11 @@ public class Member extends AuditingFields {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Member member)) return false;
-        return Objects.equals(id, member.id);
+        return Objects.equals(userId, member.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(userId);
     }
 }

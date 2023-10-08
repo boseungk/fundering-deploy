@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.member.service;
+package com.theocean.fundering.global.jwt.service;
 
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.member.domain.Member;

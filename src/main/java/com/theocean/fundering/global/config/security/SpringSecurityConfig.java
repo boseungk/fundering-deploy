@@ -2,13 +2,12 @@ package com.theocean.fundering.global.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
-import com.theocean.fundering.domain.member.service.LoginService;
-import com.theocean.fundering.global.config.security.custom.CustomJsonUsernamePasswordAuthenticationFilter;
-import com.theocean.fundering.global.config.security.jwt.JwtAuthenticationFilter;
-import com.theocean.fundering.global.config.security.handler.LoginFailureHandler;
-import com.theocean.fundering.global.config.security.handler.LoginSuccessHandler;
-import com.theocean.fundering.global.errors.exception.Exception401;
-import com.theocean.fundering.global.utils.FilterResponseUtils;
+import com.theocean.fundering.global.jwt.JwtProvider;
+import com.theocean.fundering.global.jwt.service.LoginService;
+import com.theocean.fundering.global.jwt.userInfo.CustomJsonUsernamePasswordAuthenticationFilter;
+import com.theocean.fundering.global.jwt.filter.JwtAuthenticationFilter;
+import com.theocean.fundering.global.jwt.handler.LoginFailureHandler;
+import com.theocean.fundering.global.jwt.handler.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +37,8 @@ public class SpringSecurityConfig {
     private final ObjectMapper objectMapper;
 
     private final LoginService loginService;
+
+    private final JwtProvider jwtProvider;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -47,7 +48,7 @@ public class SpringSecurityConfig {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository));
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtProvider));
             super.configure(builder);
         }
     }
@@ -79,14 +80,6 @@ public class SpringSecurityConfig {
 
         //로그인 인증창 뜨지 않게 비활성화
         http.httpBasic(AbstractHttpConfigurer::disable);
-
-
-        // 인증 실패 처리
-        http.exceptionHandling(exceptionHandling ->
-                exceptionHandling.authenticationEntryPoint((request, response, authException) ->
-                        FilterResponseUtils.unAuthorized(response, new Exception401("인증되지 않았습니다")
-                        ))
-        );
 
         http.authorizeHttpRequests(request -> request
                         // /members/** URL 인증 필요
@@ -121,7 +114,7 @@ public class SpringSecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(memberRepository, objectMapper);
+        return new LoginSuccessHandler(memberRepository, objectMapper, jwtProvider);
     }
 
     @Bean
@@ -139,7 +132,7 @@ public class SpringSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager(), memberRepository);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager(), memberRepository, jwtProvider);
         return jwtAuthenticationFilter;
     }
 }

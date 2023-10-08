@@ -1,12 +1,12 @@
-package com.theocean.fundering.global.config.security.jwt;
+package com.theocean.fundering.global.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.theocean.fundering.domain.member.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
+@RequiredArgsConstructor
 @Component
 public class JwtProvider {
     public static final Long ACCESS_EXP = 1000L * 60 * 60; // 1시간
@@ -27,8 +28,10 @@ public class JwtProvider {
     public static final String ACCESS_SECRET = "MyAccessSecretKey1234";
     public static final String REFRESH_SECRET = "MyRefreshSecretKey1234";
 
+    private final MemberRepository memberRepository;
 
-    public static String createAccessToken(String email) {
+
+    public String createAccessToken(String email) {
         String jwt = JWT.create()
                 .withSubject("AccessToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_EXP))
@@ -37,7 +40,7 @@ public class JwtProvider {
         return TOKEN_PREFIX + jwt;
     }
 
-    public static String createRefreshToken(String email) {
+    public String createRefreshToken(String email) {
         String jwt = JWT.create()
                 .withSubject("AccessToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_EXP))
@@ -46,46 +49,27 @@ public class JwtProvider {
         return TOKEN_PREFIX + jwt;
     }
 
-    public static DecodedJWT verifyAccessToken(String jwt) throws SignatureVerificationException, TokenExpiredException {
-        jwt = jwt.replace(JwtProvider.TOKEN_PREFIX, "");
-        return JWT.require(Algorithm.HMAC512(ACCESS_SECRET))
-                .build().verify(jwt);
-    }
-
-    public static DecodedJWT verifyRefreshToken(String jwt) throws SignatureVerificationException, TokenExpiredException {
-        jwt = jwt.replace(JwtProvider.TOKEN_PREFIX, "");
-        return JWT.require(Algorithm.HMAC512(REFRESH_SECRET))
-                .build().verify(jwt);
-    }
-
-    public static Optional<String> extractAccessToken(HttpServletRequest request) {
+    public Optional<String> extractAccessToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(ACCESS_HEADER))
-                .filter(refreshToken -> refreshToken.startsWith(TOKEN_PREFIX))
-                .map(refreshToken -> refreshToken.replace(TOKEN_PREFIX, ""));
+                .filter(accessToken -> accessToken.startsWith(TOKEN_PREFIX))
+                .map(accessToken -> accessToken.replace(TOKEN_PREFIX, ""));
     }
 
-    public static Optional<String> extractRefreshToken(HttpServletRequest request) {
+    public Optional<String> extractRefreshToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(REFRESH_HEADER))
                 .filter(refreshToken -> refreshToken.startsWith(TOKEN_PREFIX))
                 .map(refreshToken -> refreshToken.replace(TOKEN_PREFIX, ""));
     }
 
-    public static void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
-    }
-
-    public static void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
         response.setHeader(ACCESS_HEADER, accessToken);
-    }
-
-    public static void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
         response.setHeader(REFRESH_HEADER, refreshToken);
     }
 
-    public static boolean isTokenValid(String token) {
+
+    public boolean isAccessTokenValid(String token) {
         try {
             JWT.require(Algorithm.HMAC512(ACCESS_SECRET)).build().verify(token);
             return true;
@@ -95,7 +79,7 @@ public class JwtProvider {
         }
     }
 
-    public static Optional<String> extractEmail(String accessToken) {
+    public Optional<String> verifyAccessTokenAndExtractEmail(String accessToken) {
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(ACCESS_SECRET))
                     .build()
@@ -106,5 +90,12 @@ public class JwtProvider {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
+    }
+    public void updateRefreshToken(String email, String refreshToken) {
+        memberRepository.findByEmail(email)
+                .ifPresentOrElse(
+                        user -> user.updateRefreshToken(refreshToken),
+                        () -> new Exception("일치하는 회원이 없습니다.")
+                );
     }
 }

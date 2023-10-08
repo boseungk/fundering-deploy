@@ -1,4 +1,4 @@
-package com.theocean.fundering.global.config.security.custom;
+package com.theocean.fundering.global.jwt.userInfo;
 
 import com.theocean.fundering.domain.member.domain.Member;
 import lombok.Getter;

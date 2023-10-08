@@ -1,4 +1,4 @@
-package com.theocean.fundering.global.config.security.custom;
+package com.theocean.fundering.global.jwt.userInfo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

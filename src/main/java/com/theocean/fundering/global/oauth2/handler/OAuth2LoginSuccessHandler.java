@@ -1,6 +1,7 @@
 package com.theocean.fundering.global.oauth2.handler;
 
 import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.oauth2.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,7 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -32,13 +35,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     // jwtService
-    /* private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
-        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
-        String refreshToken = jwtService.createRefreshToken();
-        response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-        response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
+    private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+        String accessToken = jwtProvider.createAccessToken(oAuth2User.getEmail());
+        String refreshToken = jwtProvider.createRefreshToken(oAuth2User.getEmail());
+        response.addHeader(JwtProvider.ACCESS_HEADER, "Bearer " + accessToken);
+        response.addHeader(JwtProvider.REFRESH_HEADER, "Bearer " + refreshToken);
 
-        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
-    } */
+        jwtProvider.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        jwtProvider.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+    }
 }
