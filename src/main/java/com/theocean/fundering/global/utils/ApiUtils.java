@@ -15,6 +15,10 @@ public class ApiUtils {
         return new ApiResult<>(false, null, new ApiError(message, status.value()));
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 45dab9e9340f43682c8926b4c4df690d0fefcfa8
     @Getter @Setter @AllArgsConstructor
     public static class ApiResult<T> {
         private final boolean success;
@@ -27,4 +31,8 @@ public class ApiUtils {
         private final String message;
         private final int status;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 45dab9e9340f43682c8926b4c4df690d0fefcfa8
