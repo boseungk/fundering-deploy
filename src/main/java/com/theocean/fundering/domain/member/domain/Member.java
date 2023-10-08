@@ -1,13 +1,10 @@
 package com.theocean.fundering.domain.member.domain;
 
-import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.member.domain.constant.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 

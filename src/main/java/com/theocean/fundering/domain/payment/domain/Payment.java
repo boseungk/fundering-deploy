@@ -1,6 +1,6 @@
 package com.theocean.fundering.domain.payment.domain;
 
-import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.member.domain.Member;
 import lombok.AccessLevel;
@@ -9,10 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
 import java.util.Objects;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 

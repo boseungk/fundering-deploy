@@ -1,6 +1,6 @@
 package com.theocean.fundering.domain.withdrawal.domain;
 
-import com.theocean.fundering.domain.global.AuditingFields;
+import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.member.domain.Member;
 import lombok.AccessLevel;
@@ -14,7 +14,6 @@ import java.util.Objects;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "Withdrawal")
