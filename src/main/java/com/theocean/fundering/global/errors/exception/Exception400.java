@@ -1,5 +1,6 @@
 package com.theocean.fundering.global.errors.exception;
 
+
 import com.theocean.fundering.global.utils.ApiUtils;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

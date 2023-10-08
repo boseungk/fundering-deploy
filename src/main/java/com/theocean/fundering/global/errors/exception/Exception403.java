@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 
+
 // 권한 없음
 @Getter
 public class Exception403 extends RuntimeException {

@@ -15,6 +15,7 @@ public class ApiUtils {
         return new ApiResult<>(false, null, new ApiError(message, status.value()));
     }
 
+
     @Getter @Setter @AllArgsConstructor
     public static class ApiResult<T> {
         private final boolean success;
@@ -27,4 +28,5 @@ public class ApiUtils {
         private final String message;
         private final int status;
     }
+
 }

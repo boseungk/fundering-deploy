@@ -2,40 +2,59 @@ package com.theocean.fundering.domain.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.theocean.fundering.domain.comment.domain.Comment;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 public class CommentResponse {
 
-    @Data
+    @Getter
     public static class findAllDTO {
-        private Long commentId;
-        private Long writerId;
-        private String writerName;
-        private String writerProfile;
-        private String content;
-        private Long parentCommentOrder;
-        private Long commentOrder;
-        private int childCommentCount;
+        private final List<commentsDTO> comments;
+
+        @JsonProperty("isLastPage")
+        private final boolean isLastPage;
+
+        public findAllDTO(List<commentsDTO> comments, boolean isLastPage) {
+            this.comments = comments;
+            this.isLastPage = isLastPage;
+        }
+
+        public boolean getIsLastPage() {
+            return isLastPage;
+        }
+    }
+    @Getter
+    public static class commentsDTO {
+        private final Long commentId;
+        private final Long writerId;
+        private final String writerName;
+        private final String writerProfile;
+        private final String content;
+        private final Long parentCommentOrder;
+        private final Long commentOrder;
+
 
         @JsonProperty("isDeleted")
-        private boolean isDeleted;
-        private LocalDateTime createdAt;
+        private final boolean isDeleted;
+        private final LocalDateTime createdAt;
 
-        public findAllDTO(Comment comment) {
+        public commentsDTO(Comment comment, String writerName, String writerProfile) {
             this.commentId = comment.getCommentId();
-            this.writerId = comment.getWriter().getUserId();
-            this.writerName = comment.getWriter().getNickname();
-            this.writerProfile = "ImageURL_Example";
-//            this.writerProfile = comment.getWriter().getProfileImage();
+            this.writerId = comment.getWriterId();
+            this.writerName = writerName;
+            this.writerProfile = writerProfile;
             this.content = comment.getContent();
             this.parentCommentOrder = comment.getParentCommentOrder();
             this.commentOrder = comment.getCommentOrder();
-            this.childCommentCount = comment.getChildCommentCount();
             this.isDeleted = comment.isDeleted();
             this.createdAt = comment.getCreatedAt();
+        }
+
+        public boolean getIsDeleted() {
+            return isDeleted;
         }
     }
 }

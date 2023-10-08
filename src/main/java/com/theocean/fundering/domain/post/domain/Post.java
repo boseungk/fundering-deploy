@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.post.domain;
 
 
+import com.theocean.fundering.domain.account.domain.Account;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.global.utils.AuditingFields;
 import com.theocean.fundering.domain.member.domain.Member;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 @Table(name="post")
 public class Post extends AuditingFields {
@@ -26,12 +28,10 @@ public class Post extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Member writer;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Celebrity celebrity;
 
     @Column(nullable = false)
@@ -40,9 +40,11 @@ public class Post extends AuditingFields {
     @Column(nullable = false)
     private String content;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private Account account;
 
     @Column
-    private String thumbnail;
+    private String thumbnail; // 현재 임시로 String 클래스로 할당, 추후 s3와 연동할 때 리팩토링
 
     @Column
     private int targetPrice;
@@ -54,16 +56,19 @@ public class Post extends AuditingFields {
     @DateTimeFormat
     private LocalDateTime deadline;
 
-    @Column
-    private int postOrder;
+
 
     @Builder
-    public Post(Member writer, Celebrity celebrity, String title, String content, String thumbnail){
+    public Post(Long postId, Member writer, Celebrity celebrity, String title, String content, String thumbnail, int targetPrice, int participants, LocalDateTime deadline){
+        this.postId = postId;
         this.writer = writer;
         this.celebrity = celebrity;
         this.title = title;
         this.content = content;
         this.thumbnail = thumbnail;
+        this.targetPrice = targetPrice;
+        this.participants = participants;
+        this.deadline = deadline;
     }
 
     @Override

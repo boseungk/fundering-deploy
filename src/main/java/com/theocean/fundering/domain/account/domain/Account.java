@@ -25,10 +25,14 @@ public class Account {
     @ManyToOne
     private Post post;
 
+    @Column
+    private int fundingAmount;
+
     @Builder
-    public Account(Member member, Post post) {
+    public Account(Member member, Post post, int fundingAmount) {
         this.member = member;
         this.post = post;
+        this.fundingAmount = fundingAmount;
     }
 
     @Override
