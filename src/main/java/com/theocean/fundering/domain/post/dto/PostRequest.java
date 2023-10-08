@@ -14,10 +14,9 @@ public class PostRequest {
     @NoArgsConstructor
     @ToString
     public static class PostWriteDTO { // 게시글 작성 DTO
-        private Long postId;
         private Long writerId;
         private String writer;
-        private Celebrity celebrity;
+        private Long celebId;
         private String title;
         private String content;
         private String thumbnail;
@@ -25,10 +24,9 @@ public class PostRequest {
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
 
-        public Post toEntity(){
+        public Post toEntity(Member writer, Celebrity celebrity){
             return Post.builder()
                     .writer(writer)
-                    .writerId(writerId)
                     .celebrity(celebrity)
                     .title(title)
                     .content(content)
@@ -39,11 +37,10 @@ public class PostRequest {
         }
 
         @Builder
-        public PostWriteDTO(Long postId, Long writerId, String writer, Celebrity celebrity, String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline){
-            this.postId = postId;
+        public PostWriteDTO(Long writerId, String writer, Long celebId, String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline){
             this.writer = writer;
             this.writerId = writerId;
-            this.celebrity = celebrity;
+            this.celebId = celebId;
             this.title = title;
             this.content = content;
             this.thumbnail = thumbnail;

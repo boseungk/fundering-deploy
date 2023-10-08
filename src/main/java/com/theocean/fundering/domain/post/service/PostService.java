@@ -20,10 +20,17 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+//  private final MemberRepository memberRepository;
+//  private final CelebRepository celebRepository;
 
+    /**
+     * Member와 Celebrity 도메인의 작업이 완료되어야 구현 가능
+     */
     @Transactional
     public void writePost(PostRequest.PostWriteDTO postWriteDTO){
-        postRepository.save(postWriteDTO.toEntity());
+        // Member writer = memberRepository.findById(postWriteDTO.getWriterId());
+        // Celebrity celebrity = celebRepository.findById(postWriteDTO.getCelebId());
+        // postRepository.save(postWriteDTO.toEntity(writer, celebrity));
     }
 
     public PostResponse.FindByPostIdDTO findByPostId(Long postId){

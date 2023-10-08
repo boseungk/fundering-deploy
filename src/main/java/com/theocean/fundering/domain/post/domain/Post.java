@@ -27,12 +27,10 @@ public class Post extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @JoinColumn(name = "userId")
-    private Long writerId;
+    @ManyToOne
+    private Member writer;
 
-    private String writer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Celebrity celebrity;
 
     @Column(nullable = false)
@@ -45,7 +43,7 @@ public class Post extends AuditingFields {
     private Account account;
 
     @Column
-    private String thumbnail;
+    private String thumbnail; // 현재 임시로 String 클래스로 할당, 추후 s3와 연동할 때 리팩토링
 
     @Column
     private int targetPrice;
@@ -60,9 +58,8 @@ public class Post extends AuditingFields {
 
 
     @Builder
-    public Post(Long postId, Long writerId, String writer, Celebrity celebrity, String title, String content, String thumbnail, int targetPrice, int participants, LocalDateTime deadline){
+    public Post(Long postId, Member writer, Celebrity celebrity, String title, String content, String thumbnail, int targetPrice, int participants, LocalDateTime deadline){
         this.postId = postId;
-        this.writerId = writerId;
         this.writer = writer;
         this.celebrity = celebrity;
         this.title = title;

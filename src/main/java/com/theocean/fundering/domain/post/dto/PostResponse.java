@@ -17,7 +17,8 @@ public class PostResponse {
         private Long postId;
         private Long writerId;
         private String writer;
-        private Celebrity celebrity;
+        private String celebrity;
+        private String celebImg;
         private String title;
         private String content;
         private String thumbnail;
@@ -32,9 +33,10 @@ public class PostResponse {
 
         public FindByPostIdDTO(Post post){
             this.postId = post.getPostId();
-            this.writerId = post.getWriterId();
-            this.writer = post.getWriter();
-            this.celebrity = post.getCelebrity();
+            this.writerId = post.getWriter().getUserId();
+            this.writer = post.getWriter().getNickname();
+            this.celebrity = post.getCelebrity().getCelebName();
+            this.celebImg = post.getCelebrity().getProfileImage();
             this.title = post.getTitle();
             this.content = post.getContent();
             this.thumbnail = post.getThumbnail();
@@ -55,7 +57,8 @@ public class PostResponse {
         private Long postId;
         private Long writerId;
         private String writer;
-        private Celebrity celebrity;
+        private String celebrity;
+        private String celebImg;
         private String title;
         private String thumbnail;
         private int targetPrice;
@@ -66,9 +69,10 @@ public class PostResponse {
 
         public FindAllDTO(Post post){
             this.postId = post.getPostId();
-            this.writerId = post.getPostId();
-            this.writer = post.getWriter();
-            this.celebrity = post.getCelebrity();
+            this.writerId = post.getWriter().getUserId();
+            this.writer = post.getWriter().getNickname();
+            this.celebrity = post.getCelebrity().getCelebName();
+            this.celebImg = post.getCelebrity().getProfileImage();
             this.title = post.getTitle();
             this.thumbnail = post.getThumbnail();
             this.targetPrice = post.getTargetPrice();
