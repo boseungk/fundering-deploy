@@ -1,4 +1,4 @@
-package com.theocean.fundering.domain.global;
+package com.theocean.fundering.global.utils;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
