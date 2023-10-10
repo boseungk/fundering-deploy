@@ -5,6 +5,8 @@ import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.repository.CommentRepository;
+import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;

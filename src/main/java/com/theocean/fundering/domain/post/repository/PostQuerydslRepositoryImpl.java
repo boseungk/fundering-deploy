@@ -62,6 +62,6 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
     }
 
     private BooleanExpression eqWriter(Long writerId){
-        return post.writerId.eq(writerId);
+        return post.writer.userId.eq(writerId);
     }
 }
