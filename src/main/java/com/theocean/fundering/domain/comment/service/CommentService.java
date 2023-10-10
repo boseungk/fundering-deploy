@@ -5,23 +5,12 @@ import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.repository.CommentRepository;
-<<<<<<< HEAD
-<<<<<<< HEAD
-import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
-import com.theocean.fundering.domain.post.domain.Post;
 import com.theocean.fundering.domain.post.repository.PostRepository;
-=======
-=======
->>>>>>> fae78ac4509cc55d2823a68b4152a52e02c500dd
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import com.theocean.fundering.global.errors.exception.Exception500;
-<<<<<<< HEAD
->>>>>>> 45dab9e9340f43682c8926b4c4df690d0fefcfa8
-=======
->>>>>>> fae78ac4509cc55d2823a68b4152a52e02c500dd
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -16,32 +16,30 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception400.class)
-    public ResponseEntity<?> badRequest(Exception400 e){
+    public ResponseEntity<?> badRequest(Exception400 e) {
         return new ResponseEntity<>(e.body(), e.status());
     }
 
     @ExceptionHandler(Exception401.class)
-    public ResponseEntity<?> unAuthorized(Exception401 e){
+    public ResponseEntity<?> unAuthorized(Exception401 e) {
         return new ResponseEntity<>(e.body(), e.status());
     }
 
     @ExceptionHandler(Exception403.class)
-    public ResponseEntity<?> forbidden(Exception403 e){
+    public ResponseEntity<?> forbidden(Exception403 e) {
         return new ResponseEntity<>(e.body(), e.status());
     }
 
     @ExceptionHandler(Exception404.class)
-    public ResponseEntity<?> notFound(Exception404 e){
+    public ResponseEntity<?> notFound(Exception404 e) {
         return new ResponseEntity<>(e.body(), e.status());
     }
 
     @ExceptionHandler(Exception500.class)
-    public ResponseEntity<?> serverError(Exception500 e){
+    public ResponseEntity<?> serverError(Exception500 e) {
         return new ResponseEntity<>(e.body(), e.status());
     }
 
-<<<<<<< HEAD
-=======
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -58,15 +56,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResult, HttpStatus.BAD_REQUEST);
     }
 
-
->>>>>>> fae78ac4509cc55d2823a68b4152a52e02c500dd
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> unknownServerError(Exception e){
+    public ResponseEntity<?> unknownServerError(Exception e) {
         ApiUtils.ApiResult<?> apiResult = ApiUtils.error(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(apiResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-<<<<<<< HEAD
 }
-=======
-
->>>>>>> fae78ac4509cc55d2823a68b4152a52e02c500dd
