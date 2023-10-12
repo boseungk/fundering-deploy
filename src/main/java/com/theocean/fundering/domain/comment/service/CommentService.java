@@ -1,6 +1,7 @@
 package com.theocean.fundering.domain.comment.service;
 
 import com.theocean.fundering.domain.comment.domain.Comment;
+import com.theocean.fundering.domain.comment.repository.CustomCommentRepositoryImpl;
 import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
@@ -12,8 +13,6 @@ import com.theocean.fundering.global.errors.exception.Exception403;
 import com.theocean.fundering.global.errors.exception.Exception404;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
 
+    private final CustomCommentRepositoryImpl customCommentRepository;
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
@@ -34,7 +34,7 @@ public class CommentService {
     @Transactional
     public void createComment(Long memberId, Long postId, CommentRequest.saveDTO request) {
 
-        // 댓글 작성 이전 회원과 게시물 존재여부 확인
+        // 1. 댓글 작성 이전 회원과 게시물 존재여부 확인
         if (!memberRepository.existsById(memberId)) {
             throw new Exception400("존재하지 않는 회원입니다: " + memberId);
         }
@@ -43,49 +43,36 @@ public class CommentService {
             throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
         }
 
-        // 댓글 순서 구하는 로직 - 특정 post내에서 가장 최근에 작성된 댓글의 순서 + 1
-        Long commentOrder = commentRepository.getLastCommentOrder(postId) + 1;
 
-        // RequestBody value
-        Long parentCommentOrder = request.getParentCommentOrder();
+        // 요청값
+        Long parentCommentId = request.getParentCommentId();
         String content = request.getContent();
 
-        // Comment 객체 기본 생성
+        // 2. Comment 기본 객체 생성
         Comment newComment = Comment.builder()
                 .writerId(memberId)
                 .postId(postId)
                 .content(content)
-                .commentOrder(commentOrder)
+                .parentCommentId(parentCommentId)
                 .build();
 
-        // 대댓글 생성 로직 (부모 댓글이 존재할 경우)
-        if (parentCommentOrder != null) {
-            Comment parentComment = commentRepository.findByPostIdAndCommentOrder(postId, parentCommentOrder)
-                    .orElseThrow(() -> new Exception400("존재하지 않는 댓글입니다: " + parentCommentOrder));
+        // 3. 완전한 댓글 생성 (대댓글의 경우)
+        if (parentCommentId != null) {
+            Comment parentComment = commentRepository.findById(parentCommentId)
+                    .orElseThrow(() -> new Exception400("존재하지 않는 댓글입니다: " + parentCommentId));
 
-            newComment.updateParentCommentOrder(parentCommentOrder);
-
-            // 부모댓글 업데이트 (대댓글 유무 변경, 대댓글 수 증가)
-            if (!parentComment.isHasReply()) {
-                parentComment.updatehasReply(true);
-            }
-            parentComment.increaseChildCommentCount();
+            newComment.updateIsReply(true);
         }
-        else { // 일반 댓글 생성 로직 (부모 댓글이 존재하지 않을 경우)
-            newComment.updateParentCommentOrder(commentOrder);
+        else {
+            newComment.updateIsReply(false); // 일반 댓글의 경우
         }
 
-        // postId와 commentOrder를 기반으로 중복 검사
-        if (commentRepository.existsByPostIdAndCommentOrder(postId, commentOrder)) {
-            throw new Exception400("댓글 순번이 중복되었습니다: " + commentOrder);
-        }
-
+        // 4. 댓글 저장
         try {
             commentRepository.save(newComment);
         } catch(Exception e) {
             throw new Exception500("댓글 저장 중 문제가 발생했습니다.");
         }
-
     }
 
     // (기능) 댓글 목록 조회 - 유저Id를 이용하여 commentsDTO를 생성하는 로직
@@ -96,34 +83,47 @@ public class CommentService {
         return new CommentResponse.commentsDTO(
                 comment,
                 writer.getNickname(),
-                "ImageURL_Example"
-                //writer.getProfileImage()  // Todo: 유저 ProfileImage필드 추가 이후 리팩토링 예정
+                writer.getProfileImage()
         );
     }
 
 
     // (기능) 댓글 목록 조회 - 컨트롤러로 findAllDTO 리턴
-    public CommentResponse.findAllDTO getCommentsDtoByPostId(long postId, PageRequest pageRequest) {
-
+    public CommentResponse.findAllDTO getCommentsDtoByPostId(long postId, Long lastComment, int pageSize) {
         // 게시글 존재 여부 확인
         if (!postRepository.existsById(postId)) {
             throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
         }
 
-        // 댓글 페이징
-        Page<Comment> commentsPage;
+        List<Comment> comments;
         try {
-            commentsPage = commentRepository.findByPostIdOrdered(postId, pageRequest);
-        }catch(Exception e) {
+            comments = customCommentRepository.findCommentsByPostId(postId, lastComment, pageSize+1);
+        } catch(Exception e) {
             throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
         }
 
+        // 응답 DTO의 isLastPage부분 - pageSize와 댓글 수가 일치할 때를 위해 하나 더 조회한다
+        boolean isLast = comments.size() <= pageSize;
 
-        List<CommentResponse.commentsDTO> commentsDtos = commentsPage.getContent().stream()
+        if (!isLast) {
+            // 실제로 사용할 댓글은 pageSize 개만
+            comments = comments.subList(0, pageSize);
+        }
+
+        // 응답 DTO의 comments부분
+        List<CommentResponse.commentsDTO> commentsDtos = comments.stream()
                 .map(this::createCommentsDTO)
                 .collect(Collectors.toList());
 
-        return new CommentResponse.findAllDTO(commentsDtos, commentsPage.isLast());
+
+
+        // 응답 DTO의 lastCommentOrder부분
+        Long lastCommentOrder = null;
+        if (!comments.isEmpty()) {
+            lastCommentOrder = comments.get(comments.size() - 1).getCommentOrder();
+        }
+
+        return new CommentResponse.findAllDTO(commentsDtos, isLast, lastCommentOrder);
     }
 
 
