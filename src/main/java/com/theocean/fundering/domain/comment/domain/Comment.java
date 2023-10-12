@@ -63,6 +63,14 @@ public class Comment extends AuditingFields {
         this.isReply = isReply;
     }
 
+    public boolean getIsReply() {
+        return isReply;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
