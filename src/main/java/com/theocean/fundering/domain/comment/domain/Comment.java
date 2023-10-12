@@ -11,6 +11,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Objects;
 
+/*
+ 로그인한 사용자는 댓글 작성 부분에 입력을 하여 댓글을 작성할 수 있다.
+ 또한 댓글 옆에 댓글 작성 버튼을 클릭하여 대댓글을 작성할 수 있다.
+ 대댓글에 대한 대댓글은 허용되지 않는다.
+*/
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -35,6 +41,7 @@ public class Comment extends AuditingFields {
     @Column(nullable = false)
     private boolean isDeleted;
 
+    // false이면 대댓글 -> 대댓글을 작성할 수 없음.
     @Column(nullable = false)
     private boolean isReply;
 
