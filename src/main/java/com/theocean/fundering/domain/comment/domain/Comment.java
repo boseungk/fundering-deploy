@@ -41,7 +41,7 @@ public class Comment extends AuditingFields {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    // false이면 대댓글 -> 대댓글을 작성할 수 없음.
+    // true이면 대댓글 -> 대댓글을 작성할 수 없음.
     @Column(nullable = false)
     private boolean isReply;
 
@@ -57,6 +57,10 @@ public class Comment extends AuditingFields {
         this.isReply = isReply;
         this.parentCommentId = parentCommentId;
         this.isDeleted = false;
+    }
+
+    public void updateIsReply(Boolean isReply) {
+        this.isReply = isReply;
     }
 
     @Override
