@@ -133,12 +133,12 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new Exception404("존재하지 않는 댓글입니다: " + commentId));
 
-        // 게시글 존재 여부 확인
+        // 1. 게시글 존재 여부 확인
         if (!postRepository.existsById(postId)) {
             throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
         }
 
-        // 권한 확인
+        // 2. 권한 확인
         if (!comment.getWriterId().equals(memberId)) {
             throw new Exception403("댓글 삭제 권한이 없습니다.");
         }
