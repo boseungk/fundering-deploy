@@ -33,7 +33,7 @@ public class CommentController {
                                          @RequestParam(required = false, defaultValue = "0") Long lastCommentId,
                                          @RequestParam(required = false, defaultValue = "5") int pageSize) {
 
-        CommentResponse.findAllDTO response = commentService.getCommentsDtoByPostId(postId, lastCommentId, pageSize);
+        CommentResponse.findAllDTO response = commentService.getComments(postId, lastCommentId, pageSize);
 
         return ResponseEntity.ok(ApiUtils.success(response));
     }

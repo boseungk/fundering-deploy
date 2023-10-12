@@ -29,6 +29,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private static final int LIMIT = 30;
+
 
     // (기능) 댓글 작성
     @Transactional
@@ -61,6 +63,17 @@ public class CommentService {
             Comment parentComment = commentRepository.findById(parentCommentId)
                     .orElseThrow(() -> new Exception400("존재하지 않는 댓글입니다: " + parentCommentId));
 
+            // 부모 댓글이 대댓글인 경우 댓글을 작성할 수 없다
+            if (parentComment.getIsReply()) {
+                throw new Exception400("대댓글에는 댓글을 달 수 없습니다.");
+            }
+
+            // 대댓글 수가 제한을 초과한 경우 댓글을 작성할 수 없다
+            long childCommentCount = commentRepository.countByParentCommentId(parentCommentId);
+            if (childCommentCount >= LIMIT) {
+                throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
+            }
+
             newComment.updateIsReply(true);
         }
         else {
@@ -89,41 +102,46 @@ public class CommentService {
 
 
     // (기능) 댓글 목록 조회 - 컨트롤러로 findAllDTO 리턴
-    public CommentResponse.findAllDTO getCommentsDtoByPostId(long postId, Long lastComment, int pageSize) {
-        // 게시글 존재 여부 확인
+    public CommentResponse.findAllDTO getComments(long postId, Long lastCommentId, int pageSize) {
+
+        // 1. 게시글 존재 여부 확인
         if (!postRepository.existsById(postId)) {
             throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
         }
 
+
+        // 2. 댓글 조회 - postId가 일치하는 댓글 중 lastCommentId보다 PK값이 큰 댓글들을 pageSize+1개 가져온다
         List<Comment> comments;
         try {
-            comments = customCommentRepository.findCommentsByPostId(postId, lastComment, pageSize+1);
+            comments = customCommentRepository.findCommentsByPostId(postId, lastCommentId, pageSize+1);
         } catch(Exception e) {
             throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
         }
 
-        // 응답 DTO의 isLastPage부분 - pageSize와 댓글 수가 일치할 때를 위해 하나 더 조회한다
+
+        // 3. findAllDTO의 isLastPage - pageSize와 댓글 수가 일치할 때를 대비해 위에서 하나 더 조회한 상태이다
         boolean isLast = comments.size() <= pageSize;
 
+
+        // 4. 마지막 페이지가 아닐 때는 pageSize만큼의 댓글만 사용한다
         if (!isLast) {
-            // 실제로 사용할 댓글은 pageSize 개만
             comments = comments.subList(0, pageSize);
         }
 
-        // 응답 DTO의 comments부분
-        List<CommentResponse.commentsDTO> commentsDtos = comments.stream()
+
+        // 5. findAllDTO의 comments
+        List<CommentResponse.commentsDTO> commentsDTOs = comments.stream()
                 .map(this::createCommentsDTO)
                 .collect(Collectors.toList());
 
 
-
-        // 응답 DTO의 lastCommentOrder부분
-        Long lastCommentOrder = null;
+        // 6. findAllDTO의 lastComment
+        Long lastComment = null;
         if (!comments.isEmpty()) {
-            lastCommentOrder = comments.get(comments.size() - 1).getCommentOrder();
+            lastComment = comments.get(comments.size() - 1).getCommentId();
         }
 
-        return new CommentResponse.findAllDTO(commentsDtos, isLast, lastCommentOrder);
+        return new CommentResponse.findAllDTO(commentsDTOs, isLast, lastComment);
     }
 
 
