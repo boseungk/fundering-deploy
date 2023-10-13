@@ -8,6 +8,7 @@ import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class CommentController {
     private final CommentService commentService;
 
     // (기능) 댓글 작성
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<?> createComment(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody @Valid CommentRequest.saveDTO commentRequest, @PathVariable long postId) {
 
@@ -41,6 +43,7 @@ public class CommentController {
 
 
     // (기능) 댓글 삭제
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable long postId, @PathVariable long commentId) {
 
