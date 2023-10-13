@@ -5,5 +5,5 @@ import com.theocean.fundering.domain.comment.domain.Comment;
 import java.util.List;
 
 public interface CustomCommentRepository {
-    List<Comment> findCommentsByPostId(Long postId, Long lastCommentId, int pageSize);
+    List<Comment> getCommentList(Long postId, int lastGroup, int lastOrder, int pageSize);
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.OptionalLong;
 import java.util.stream.Collectors;
 
 
@@ -29,80 +30,84 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
-    private static final int LIMIT = 30;
+    private static final int REPLY_LIMIT = 30;
 
 
     // (기능) 댓글 작성
     @Transactional
     public void createComment(Long memberId, Long postId, CommentRequest.saveDTO request) {
 
-        // 1. 댓글 작성 이전 회원과 게시물 존재여부 확인
+        validateMemberAndPost(memberId, postId);
+
+        Integer group = request.getGroup();
+        String content = request.getContent();
+
+        Comment newComment = buildBaseComment(memberId, postId, content);
+
+        if (group != null) {
+            createReplyComment(postId, group, newComment);
+        } else {
+            createRootComment(postId, newComment);
+        }
+    }
+
+    private void validateMemberAndPost(Long memberId, Long postId) {
         if (!memberRepository.existsById(memberId)) {
-            throw new Exception400("존재하지 않는 회원입니다: " + memberId);
+            throw new Exception404("존재하지 않는 회원입니다: " + memberId);
         }
 
         if (!postRepository.existsById(postId)) {
             throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
         }
+    }
 
-
-        // 요청값
-        Long parentCommentId = request.getParentCommentId();
-        String content = request.getContent();
-
-        // 2. Comment 기본 객체 생성
-        Comment newComment = Comment.builder()
+    private Comment buildBaseComment(Long memberId, Long postId, String content) {
+        return Comment.builder()
                 .writerId(memberId)
                 .postId(postId)
                 .content(content)
-                .parentCommentId(parentCommentId)
                 .build();
+    }
 
-        // 3. 완전한 댓글 생성 (대댓글의 경우)
-        if (parentCommentId != null) {
-            Comment parentComment = commentRepository.findById(parentCommentId)
-                    .orElseThrow(() -> new Exception400("존재하지 않는 댓글입니다: " + parentCommentId));
+    private void createReplyComment(Long postId, Integer group, Comment newComment) {
 
-            // 부모 댓글이 대댓글인 경우 댓글을 작성할 수 없다
-            if (parentComment.getIsReply()) {
+            Comment parentComment = commentRepository.getParentComment(postId, group)
+                    .orElseThrow(() -> new Exception400("원댓글을 찾을 수 없습니다."));
+
+            // 원댓글이 대댓글인 경우 댓글을 작성할 수 없다
+            if (parentComment.getDepth() > 0) {
                 throw new Exception400("대댓글에는 댓글을 달 수 없습니다.");
             }
 
             // 대댓글 수가 제한을 초과한 경우 댓글을 작성할 수 없다
-            long childCommentCount = commentRepository.countByParentCommentId(parentCommentId);
-            if (childCommentCount >= LIMIT) {
+            int replyCount = commentRepository.countReplies(postId, group) - 1;
+            if (replyCount >= REPLY_LIMIT) {
                 throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
             }
 
-            newComment.updateIsReply(true);
-        }
-        else {
-            newComment.updateIsReply(false); // 일반 댓글의 경우
-        }
+            // order, depth, group 업데이트
+            int order = replyCount + 1;
+            int depth = parentComment.getDepth() + 1;
 
-        // 4. 댓글 저장
-        try {
+            newComment.updateCommentProperties(group, order, depth);
+
             commentRepository.save(newComment);
-        } catch(Exception e) {
-            throw new Exception500("댓글 저장 중 문제가 발생했습니다.");
-        }
     }
 
-    // (기능) 댓글 목록 조회 - 유저Id를 이용하여 commentsDTO를 생성하는 로직
-    private CommentResponse.commentsDTO createCommentsDTO(Comment comment) {
-        Member writer = memberRepository.findById(comment.getWriterId())
-                .orElseThrow(() -> new Exception404("존재하지 않는 회원입니다: " + comment.getWriterId()));
+    private void createRootComment(Long postId, Comment newComment) {
+        int group = commentRepository.findMaxGroup(postId) + 1;
+        int order = 0;
+        int depth = 0;
 
-        return new CommentResponse.commentsDTO(
-                comment,
-                writer.getNickname(),
-                writer.getProfileImage()
-        );
+        newComment.updateCommentProperties(group, order, depth);
+
+        commentRepository.save(newComment);
     }
+
 
 
     // (기능) 댓글 목록 조회 - 컨트롤러로 findAllDTO 리턴
-    public CommentResponse.findAllDTO getComments(long postId, Long lastCommentId, int pageSize) {
+    public CommentResponse.findAllDTO getComments(long postId, int lastGroup, int lastOrder, int pageSize) {
 
         // 1. 게시글 존재 여부 확인
         if (!postRepository.existsById(postId)) {
@@ -113,7 +118,7 @@ public class CommentService {
         // 2. 댓글 조회 - postId가 일치하는 댓글 중 lastCommentId보다 PK값이 큰 댓글들을 pageSize+1개 가져온다
         List<Comment> comments;
         try {
-            comments = customCommentRepository.findCommentsByPostId(postId, lastCommentId, pageSize+1);
+            comments = customCommentRepository.getCommentList(postId, lastGroup,lastOrder, pageSize+1);
         } catch(Exception e) {
             throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
         }
@@ -135,14 +140,30 @@ public class CommentService {
                 .collect(Collectors.toList());
 
 
-        // 6. findAllDTO의 lastComment
-        Long lastComment = null;
+        // 6. findAllDTO의 lastGroup, lastOrder
+        Integer groupCursor = null;
+        Integer orderCursor = null;
+
         if (!comments.isEmpty()) {
-            lastComment = comments.get(comments.size() - 1).getCommentId();
+            Comment lastComment = comments.get(comments.size() - 1);
+            groupCursor = lastComment.getGroup();
+            orderCursor = lastComment.getOrder();
         }
 
-        return new CommentResponse.findAllDTO(commentsDTOs, isLast, lastComment);
+        return new CommentResponse.findAllDTO(commentsDTOs, groupCursor, orderCursor, isLast);
     }
+
+    private CommentResponse.commentsDTO createCommentsDTO(Comment comment) {
+        Member writer = memberRepository.findById(comment.getWriterId())
+                .orElseThrow(() -> new Exception404("존재하지 않는 회원입니다: " + comment.getWriterId()));
+
+        return new CommentResponse.commentsDTO(
+                comment,
+                writer.getNickname(),
+                writer.getProfileImage()
+        );
+    }
+
 
 
     // (기능) 댓글 삭제

@@ -30,13 +30,15 @@ public class CommentController {
     // (기능) 댓글 목록 조회
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<?> getComments(@PathVariable long postId,
-                                         @RequestParam(required = false, defaultValue = "0") Long lastCommentId,
+                                         @RequestParam(required = false, defaultValue = "0") int lastGroup,
+                                         @RequestParam(required = false, defaultValue = "0") int lastOrder,
                                          @RequestParam(required = false, defaultValue = "5") int pageSize) {
 
-        CommentResponse.findAllDTO response = commentService.getComments(postId, lastCommentId, pageSize);
+        CommentResponse.findAllDTO response = commentService.getComments(postId, lastGroup, lastOrder, pageSize);
 
         return ResponseEntity.ok(ApiUtils.success(response));
     }
+
 
     // (기능) 댓글 삭제
     @DeleteMapping("/posts/{postId}/comments/{commentId}")

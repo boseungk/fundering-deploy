@@ -41,35 +41,29 @@ public class Comment extends AuditingFields {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    // true이면 대댓글 -> 대댓글을 작성할 수 없음.
-    @Column(nullable = false)
-    private boolean isReply;
+    @Column(name = "`GROUP`", nullable = false)
+    private int group;  // 댓글 조회시 분류를 위한 그룹핑 - 대댓글은 원댓글의 필드값을 따라가고, 원댓글의 경우 자신의 PK값을 갖는다
 
-    // 부모 댓글의 ID
-    @Column
-    private Long parentCommentId;
+    @Column(name = "`ORDER`", nullable = false)
+    private int order;  // 같은 그룹내에서 댓글 순서 - 생성순, 원댓글은 0
+
+    @Column(nullable = false)
+    private int depth;  // 화면에 표시되는 들여쓰기 수준 - 원댓글 0부터 시작
 
     @Builder
-    public Comment(Long writerId, Long postId, String content, boolean isReply, Long parentCommentId) {
+    public Comment(Long writerId, Long postId, String content) {
         this.writerId = writerId;
         this.postId = postId;
         this.content = content;
-        this.isReply = isReply;
-        this.parentCommentId = parentCommentId;
         this.isDeleted = false;
     }
 
-    public void updateIsReply(Boolean isReply) {
-        this.isReply = isReply;
+    public void updateCommentProperties(int group, int order, int depth) {
+        this.group = group;
+        this.order = order;
+        this.depth = depth;
     }
 
-    public boolean getIsReply() {
-        return isReply;
-    }
-
-    public boolean getIsDeleted() {
-        return isDeleted;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -14,12 +14,14 @@ public class CommentResponse {
     @Getter
     public static class findAllDTO {
         private final List<commentsDTO> comments;
-        private final Long lastComment;
+        private final Integer groupCursor;
+        private final Integer orderCursor;
         private final boolean isLastPage;
 
-        public findAllDTO(List<commentsDTO> comments, boolean isLastPage, Long lastComment) {
+        public findAllDTO(List<commentsDTO> comments, Integer groupCursor, Integer orderCursor, boolean isLastPage) {
             this.comments = comments;
-            this.lastComment = lastComment;
+            this.groupCursor = groupCursor;
+            this.orderCursor = orderCursor;
             this.isLastPage = isLastPage;
         }
 
@@ -31,25 +33,27 @@ public class CommentResponse {
     // findAllDTO의 내부에 들어갈 댓글 정보 DTO
     @Getter
     public static class commentsDTO {
-        private final Long parentComment;
         private final Long commentId;
         private final Long writerId;
         private final String writerName;
         private final String writerProfile;
         private final String content;
-        private final boolean isReply;
+        private final int group;
+        private final int order;
+        private final int depth;
         private final boolean isDeleted;
         private final long createdAt;
 
         public commentsDTO(Comment comment, String writerName, String writerProfile) {
-            this.parentComment = comment.getParentCommentId();
             this.commentId = comment.getCommentId();
             this.writerId = comment.getWriterId();
             this.writerName = writerName;
             this.writerProfile = writerProfile;
             this.content = comment.getContent();
-            this.isReply = comment.getIsReply();
-            this.isDeleted = comment.getIsDeleted();
+            this.group = comment.getGroup();
+            this.order = comment.getOrder();
+            this.depth = comment.getDepth();
+            this.isDeleted = comment.isDeleted();
             this.createdAt = toEpochSecond(comment.getCreatedAt());
         }
 
@@ -58,9 +62,6 @@ public class CommentResponse {
         }
         public boolean getIsDeleted() {
             return isDeleted;
-        }
-        public boolean getIsReply() {
-            return isReply;
         }
     }
 }
