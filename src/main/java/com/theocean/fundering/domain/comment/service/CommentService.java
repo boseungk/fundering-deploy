@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.OptionalLong;
 import java.util.stream.Collectors;
 
 
@@ -71,27 +70,27 @@ public class CommentService {
 
     private void createReplyComment(Long postId, Integer group, Comment newComment) {
 
-            Comment parentComment = commentRepository.getParentComment(postId, group)
-                    .orElseThrow(() -> new Exception400("원댓글을 찾을 수 없습니다."));
+        Comment parentComment = commentRepository.getParentComment(postId, group)
+                .orElseThrow(() -> new Exception400("원댓글을 찾을 수 없습니다."));
 
-            // 원댓글이 대댓글인 경우 댓글을 작성할 수 없다
-            if (parentComment.getDepth() > 0) {
-                throw new Exception400("대댓글에는 댓글을 달 수 없습니다.");
-            }
+        // 원댓글이 대댓글인 경우 댓글을 작성할 수 없다
+        if (parentComment.getDepth() > 0) {
+            throw new Exception400("대댓글에는 댓글을 달 수 없습니다.");
+        }
 
-            // 대댓글 수가 제한을 초과한 경우 댓글을 작성할 수 없다
-            int replyCount = commentRepository.countReplies(postId, group) - 1;
-            if (replyCount >= REPLY_LIMIT) {
-                throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
-            }
+        // 대댓글 수가 제한을 초과한 경우 댓글을 작성할 수 없다
+        int replyCount = commentRepository.countReplies(postId, group) - 1;
+        if (replyCount >= REPLY_LIMIT) {
+            throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
+        }
 
-            // order, depth, group 업데이트
-            int order = replyCount + 1;
-            int depth = parentComment.getDepth() + 1;
+        // order, depth, group 업데이트
+        int order = replyCount + 1;
+        int depth = parentComment.getDepth() + 1;
 
-            newComment.updateCommentProperties(group, order, depth);
+        newComment.updateCommentProperties(group, order, depth);
 
-            commentRepository.save(newComment);
+        commentRepository.save(newComment);
     }
 
     private void createRootComment(Long postId, Comment newComment) {
@@ -109,16 +108,13 @@ public class CommentService {
     // (기능) 댓글 목록 조회 - 컨트롤러로 findAllDTO 리턴
     public CommentResponse.findAllDTO getComments(long postId, int lastGroup, int lastOrder, int pageSize) {
 
-        // 1. 게시글 존재 여부 확인
-        if (!postRepository.existsById(postId)) {
-            throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
-        }
-
+        // 1. 게시글 존재 여부 판별
+        validatePostExistence(postId);
 
         // 2. 댓글 조회 - postId가 일치하는 댓글 중 lastCommentId보다 PK값이 큰 댓글들을 pageSize+1개 가져온다
         List<Comment> comments;
         try {
-            comments = customCommentRepository.getCommentList(postId, lastGroup,lastOrder, pageSize+1);
+            comments = customCommentRepository.getCommentList(postId, lastGroup, lastOrder, pageSize+1);
         } catch(Exception e) {
             throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
         }
@@ -135,12 +131,10 @@ public class CommentService {
 
 
         // 5. findAllDTO의 comments
-        List<CommentResponse.commentsDTO> commentsDTOs = comments.stream()
-                .map(this::createCommentsDTO)
-                .collect(Collectors.toList());
+        List<CommentResponse.commentDTO> commentsDTOs = convertToCommentDTOs(comments);
 
 
-        // 6. findAllDTO의 lastGroup, lastOrder
+        // 6. findAllDTO의 groupCursor, orderCursor
         Integer groupCursor = null;
         Integer orderCursor = null;
 
@@ -153,15 +147,28 @@ public class CommentService {
         return new CommentResponse.findAllDTO(commentsDTOs, groupCursor, orderCursor, isLast);
     }
 
-    private CommentResponse.commentsDTO createCommentsDTO(Comment comment) {
+    private CommentResponse.commentDTO createCommentsDTO(Comment comment) {
         Member writer = memberRepository.findById(comment.getWriterId())
                 .orElseThrow(() -> new Exception404("존재하지 않는 회원입니다: " + comment.getWriterId()));
 
-        return new CommentResponse.commentsDTO(
+        return new CommentResponse.commentDTO(
                 comment,
                 writer.getNickname(),
                 writer.getProfileImage()
         );
+    }
+
+    private void validatePostExistence(long postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
+        }
+    }
+
+    private List<CommentResponse.commentDTO> convertToCommentDTOs(List<Comment> comments) {
+
+        return comments.stream()
+                .map(this::createCommentsDTO)
+                .collect(Collectors.toList());
     }
 
 

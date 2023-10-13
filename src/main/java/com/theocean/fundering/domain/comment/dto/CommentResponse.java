@@ -13,12 +13,12 @@ public class CommentResponse {
     // 전체 댓글 조회 DTO
     @Getter
     public static class findAllDTO {
-        private final List<commentsDTO> comments;
+        private final List<commentDTO> comments;
         private final Integer groupCursor;
         private final Integer orderCursor;
         private final boolean isLastPage;
 
-        public findAllDTO(List<commentsDTO> comments, Integer groupCursor, Integer orderCursor, boolean isLastPage) {
+        public findAllDTO(List<commentDTO> comments, Integer groupCursor, Integer orderCursor, boolean isLastPage) {
             this.comments = comments;
             this.groupCursor = groupCursor;
             this.orderCursor = orderCursor;
@@ -32,7 +32,7 @@ public class CommentResponse {
 
     // findAllDTO의 내부에 들어갈 댓글 정보 DTO
     @Getter
-    public static class commentsDTO {
+    public static class commentDTO {
         private final Long commentId;
         private final Long writerId;
         private final String writerName;
@@ -44,7 +44,7 @@ public class CommentResponse {
         private final boolean isDeleted;
         private final long createdAt;
 
-        public commentsDTO(Comment comment, String writerName, String writerProfile) {
+        public commentDTO(Comment comment, String writerName, String writerProfile) {
             this.commentId = comment.getCommentId();
             this.writerId = comment.getWriterId();
             this.writerName = writerName;
