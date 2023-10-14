@@ -1,6 +1,6 @@
 package com.theocean.fundering.global.oauth2.handler;
 
-import com.theocean.fundering.domain.member.repository.MemberRepository;
+import com.theocean.fundering.global.config.security.jwt.JwtProvider;
 import com.theocean.fundering.global.oauth2.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -31,14 +31,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         }
     }
 
-    // jwtService
-    /* private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
-        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
-        String refreshToken = jwtService.createRefreshToken();
-        response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-        response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
+    private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+        String accessToken = jwtProvider.createAccessToken(oAuth2User.getEmail());
+        String refreshToken = jwtProvider.createRefreshToken(oAuth2User.getEmail());
+        response.setHeader(JwtProvider.ACCESS_HEADER, accessToken);
+        response.setHeader(JwtProvider.REFRESH_HEADER, refreshToken);
 
-        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
-    } */
+        jwtProvider.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+    }
 }
