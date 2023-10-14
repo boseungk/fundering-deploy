@@ -7,7 +7,11 @@ import com.theocean.fundering.global.config.security.custom.CustomJsonUsernamePa
 import com.theocean.fundering.global.config.security.jwt.JwtAuthenticationFilter;
 import com.theocean.fundering.global.config.security.handler.LoginFailureHandler;
 import com.theocean.fundering.global.config.security.handler.LoginSuccessHandler;
+import com.theocean.fundering.global.config.security.jwt.JwtProvider;
 import com.theocean.fundering.global.errors.exception.Exception401;
+import com.theocean.fundering.global.oauth2.handler.OAuth2LoginFailureHandler;
+import com.theocean.fundering.global.oauth2.handler.OAuth2LoginSuccessHandler;
+import com.theocean.fundering.global.oauth2.service.CustomOAuth2UserService;
 import com.theocean.fundering.global.utils.FilterResponseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +42,13 @@ public class SpringSecurityConfig {
     private final ObjectMapper objectMapper;
 
     private final LoginService loginService;
+
+    private final JwtProvider jwtProvider;
+
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -47,7 +58,7 @@ public class SpringSecurityConfig {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository));
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager, memberRepository, jwtProvider));
             super.configure(builder);
         }
     }
@@ -80,20 +91,21 @@ public class SpringSecurityConfig {
         //로그인 인증창 뜨지 않게 비활성화
         http.httpBasic(AbstractHttpConfigurer::disable);
 
-
-        // 인증 실패 처리
-        http.exceptionHandling(exceptionHandling ->
-                exceptionHandling.authenticationEntryPoint((request, response, authException) ->
-                        FilterResponseUtils.unAuthorized(response, new Exception401("인증되지 않았습니다")
-                        ))
+        http.authorizeHttpRequests(request -> request
+                // /members/** URL 인증 필요
+                .requestMatchers(new AntPathRequestMatcher("/members/**"))
+                .authenticated()
+                .anyRequest().permitAll()
         );
 
-        http.authorizeHttpRequests(request -> request
-                        // /members/** URL 인증 필요
-                        .requestMatchers(new AntPathRequestMatcher("/members/**"))
-                        .authenticated()
-                        .anyRequest().permitAll()
-                );
+        // oauth2 로그인 설정
+        http.oauth2Login(oauth2Login -> oauth2Login
+                .successHandler(oAuth2LoginSuccessHandler)
+                .failureHandler(oAuth2LoginFailureHandler)
+                .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
+                        .userService(customOAuth2UserService)
+                )
+        );
 
         return http.build();
     }
@@ -121,7 +133,7 @@ public class SpringSecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(memberRepository, objectMapper);
+        return new LoginSuccessHandler(memberRepository, objectMapper, jwtProvider);
     }
 
     @Bean
@@ -139,7 +151,7 @@ public class SpringSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager(), memberRepository);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager(), memberRepository, jwtProvider);
         return jwtAuthenticationFilter;
     }
 }
