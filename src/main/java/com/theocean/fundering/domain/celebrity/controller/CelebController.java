@@ -1,9 +1,6 @@
 package com.theocean.fundering.domain.celebrity.controller;
 
-import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
-import com.theocean.fundering.domain.celebrity.dto.CelebFundingResponseDTO;
-import com.theocean.fundering.domain.celebrity.dto.CelebResponseDTO;
-import com.theocean.fundering.domain.celebrity.dto.PageResponse;
+import com.theocean.fundering.domain.celebrity.dto.*;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
@@ -32,7 +29,13 @@ public class CelebController {
     }
     @GetMapping("/celebs/{celebId}")
     public ResponseEntity<?> findByCelebId(@PathVariable Long celebId){
-        CelebResponseDTO responseDTO = celebService.findByCelebId(celebId);
+        CelebDetailsResponseDTO responseDTO = celebService.findByCelebId(celebId);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
+    }
+    @GetMapping("/celebs")
+    public ResponseEntity<?> findAllPosting(@RequestParam Long celebId,
+                                            @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable){
+        PageResponse<CelebListResponseDTO> page = celebService.findAllCeleb(celebId, pageable);
+        return ResponseEntity.ok(ApiUtils.success(page));
     }
 }

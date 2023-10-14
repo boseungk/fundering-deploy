@@ -1,15 +1,13 @@
 package com.theocean.fundering.domain.celebrity.service;
 
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
-import com.theocean.fundering.domain.celebrity.dto.CelebFundingResponseDTO;
-import com.theocean.fundering.domain.celebrity.dto.CelebResponseDTO;
-import com.theocean.fundering.domain.celebrity.dto.PageResponse;
+import com.theocean.fundering.domain.celebrity.dto.*;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.errors.exception.Exception500;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +29,14 @@ public class CelebService {
         return new PageResponse<>(page);
     }
 
-    public CelebResponseDTO findByCelebId(Long celebId) {
+    public CelebDetailsResponseDTO findByCelebId(Long celebId) {
         Celebrity celebrity = celebRepository.findById(celebId).orElseThrow(
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다."));
-        return CelebResponseDTO.of(celebrity);
+        return CelebDetailsResponseDTO.of(celebrity);
+    }
+
+    public PageResponse<CelebListResponseDTO> findAllCeleb(Long celebId, Pageable pageable) {
+        var page = celebRepository.findAllCeleb(celebId, pageable);
+        return new PageResponse<>(page);
     }
 }
