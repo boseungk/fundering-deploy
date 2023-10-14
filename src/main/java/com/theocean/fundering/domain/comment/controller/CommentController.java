@@ -32,11 +32,11 @@ public class CommentController {
     // (기능) 댓글 목록 조회
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<?> getComments(@PathVariable long postId,
-                                         @RequestParam(required = false, defaultValue = "0") int lastGroup,
+                                         @RequestParam(required = false, defaultValue = "0") int lastRef,
                                          @RequestParam(required = false, defaultValue = "0") int lastOrder,
                                          @RequestParam(required = false, defaultValue = "5") int pageSize) {
 
-        CommentResponse.findAllDTO response = commentService.getComments(postId, lastGroup, lastOrder, pageSize);
+        CommentResponse.findAllDTO response = commentService.getComments(postId, lastRef, lastOrder, pageSize);
 
         return ResponseEntity.ok(ApiUtils.success(response));
     }

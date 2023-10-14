@@ -38,13 +38,13 @@ public class CommentService {
 
         validateMemberAndPost(memberId, postId);
 
-        Integer group = request.getGroup();
+        Integer ref = request.getRef();
         String content = request.getContent();
 
         Comment newComment = buildBaseComment(memberId, postId, content);
 
-        if (group != null) {
-            createReplyComment(postId, group, newComment);
+        if (ref != null) {
+            createReplyComment(postId, ref, newComment);
         } else {
             createRootComment(postId, newComment);
         }
@@ -68,9 +68,9 @@ public class CommentService {
                 .build();
     }
 
-    private void createReplyComment(Long postId, Integer group, Comment newComment) {
+    private void createReplyComment(Long postId, Integer ref, Comment newComment) {
 
-        Comment parentComment = commentRepository.getParentComment(postId, group)
+        Comment parentComment = commentRepository.getParentComment(postId, ref)
                 .orElseThrow(() -> new Exception400("원댓글을 찾을 수 없습니다."));
 
         // 원댓글이 대댓글인 경우 댓글을 작성할 수 없다
@@ -79,7 +79,7 @@ public class CommentService {
         }
 
         // 대댓글 수가 제한을 초과한 경우 댓글을 작성할 수 없다
-        int replyCount = commentRepository.countReplies(postId, group) - 1;
+        int replyCount = commentRepository.countReplies(postId, ref) - 1;
         if (replyCount >= REPLY_LIMIT) {
             throw new Exception400("더 이상 대댓글을 달 수 없습니다.");
         }
@@ -88,17 +88,17 @@ public class CommentService {
         int order = replyCount + 1;
         int depth = parentComment.getDepth() + 1;
 
-        newComment.updateCommentProperties(group, order, depth);
+        newComment.updateCommentProperties(ref, order, depth);
 
         commentRepository.save(newComment);
     }
 
     private void createRootComment(Long postId, Comment newComment) {
-        int group = commentRepository.findMaxGroup(postId) + 1;
+        int ref = commentRepository.findMaxGroup(postId) + 1;
         int order = 0;
         int depth = 0;
 
-        newComment.updateCommentProperties(group, order, depth);
+        newComment.updateCommentProperties(ref, order, depth);
 
         commentRepository.save(newComment);
     }
@@ -140,8 +140,8 @@ public class CommentService {
 
         if (!comments.isEmpty()) {
             Comment lastComment = comments.get(comments.size() - 1);
-            groupCursor = lastComment.getGroup();
-            orderCursor = lastComment.getOrder();
+            groupCursor = lastComment.getRef();
+            orderCursor = lastComment.getRefOrder();
         }
 
         return new CommentResponse.findAllDTO(commentsDTOs, groupCursor, orderCursor, isLast);

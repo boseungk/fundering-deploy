@@ -14,13 +14,13 @@ public class CommentResponse {
     @Getter
     public static class findAllDTO {
         private final List<commentDTO> comments;
-        private final Integer groupCursor;
+        private final Integer refCursor;
         private final Integer orderCursor;
         private final boolean isLastPage;
 
-        public findAllDTO(List<commentDTO> comments, Integer groupCursor, Integer orderCursor, boolean isLastPage) {
+        public findAllDTO(List<commentDTO> comments, Integer refCursor, Integer orderCursor, boolean isLastPage) {
             this.comments = comments;
-            this.groupCursor = groupCursor;
+            this.refCursor = refCursor;
             this.orderCursor = orderCursor;
             this.isLastPage = isLastPage;
         }
@@ -38,8 +38,8 @@ public class CommentResponse {
         private final String writerName;
         private final String writerProfile;
         private final String content;
-        private final int group;
-        private final int order;
+        private final int ref;
+        private final int refOrder;
         private final int depth;
         private final boolean isDeleted;
         private final long createdAt;
@@ -50,8 +50,8 @@ public class CommentResponse {
             this.writerName = writerName;
             this.writerProfile = writerProfile;
             this.content = comment.getContent();
-            this.group = comment.getGroup();
-            this.order = comment.getOrder();
+            this.ref = comment.getRef();
+            this.refOrder = comment.getRefOrder();
             this.depth = comment.getDepth();
             this.isDeleted = comment.isDeleted();
             this.createdAt = toEpochSecond(comment.getCreatedAt());

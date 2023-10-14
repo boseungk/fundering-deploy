@@ -15,16 +15,16 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Comment> getCommentList(Long postId, int lastGroup, int lastOrder, int pageSize) {
+    public List<Comment> getCommentList(Long postId, int lastRef, int lastOrder, int pageSize) {
         BooleanExpression whereCondition = comment.postId.eq(postId)
                 .andAnyOf(
-                        comment.group.goe(lastGroup).and(comment.order.gt(lastOrder)),
-                        comment.group.gt(lastGroup)
+                        comment.ref.goe(lastRef).and(comment.refOrder.gt(lastOrder)),
+                        comment.ref.gt(lastRef)
                 );
 
         return queryFactory.selectFrom(comment)
                 .where(whereCondition)
-                .orderBy(comment.group.asc(), comment.order.asc())
+                .orderBy(comment.ref.asc(), comment.refOrder.asc())
                 .limit(pageSize)
                 .fetch();
     }
