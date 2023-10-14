@@ -1,10 +1,9 @@
 package com.theocean.fundering.domain.news.domain;
 
 import com.theocean.fundering.global.utils.AuditingFields;
-import com.theocean.fundering.domain.post.domain.Post;
-import com.theocean.fundering.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,27 +19,36 @@ public class News extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long newsId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Post post;
+    @Column(nullable = false)
+    private Long postId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    @Column(nullable = false)
+    private Long writerId;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column
+    private String imageUrls; //TODO: 추후 리팩토링 예정
 
     @Column(nullable = false)
-    private Integer newsOrder;
+    private boolean viewRestriction;
 
-    public News(Post post, Member member, String title, String content) {
-        this.post = post;
-        this.member = member;
+
+    @Builder
+    public News(Long postId, Long writerId, String title, String content, boolean viewRestriction) {
+        this.postId = postId;
+        this.writerId = writerId;
         this.title = title;
         this.content = content;
+        this.viewRestriction = viewRestriction;
+    }
+
+    public void updateImageUrls(String imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     @Override
