@@ -22,23 +22,18 @@ public class OAuthAttributes {
     }
 
     public static OAuthAttributes of(String userNameAttributeName, Map<String, Object> attributes) {
-        return ofKakao(userNameAttributeName, attributes);
-    }
-
-    private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
                 .nameAttributeKey(userNameAttributeName)
                 .oauth2UserInfo(new KakaoOAuth2UserInfo(attributes))
                 .build();
     }
 
-    public Member toEntity(OAuth2UserInfo oauth2UserInfo) {
+    public Member toEntity() {
         return Member.builder()
                 .userId(Long.valueOf(oauth2UserInfo.getId()))
                 .nickname(oauth2UserInfo.getNickname())
                 .profileImage(oauth2UserInfo.getImageUrl())
-                // .phoneNumber(oauth2UserInfo.getPhoneNumber())
-                .userRole(UserRole.USER)
+                .userRole(UserRole.GUEST)
                 .build();
     }
 }

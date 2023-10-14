@@ -4,9 +4,9 @@ spring:
       client:
         registration:
           kakao:
-            client-id: 카카오 클라이언트 ID
-            client-secret: 카카오 클라이언트 Secret
-            redirect-uri: 설정한 redirect URI
+            client-id: f9d6e9fed20d4699293b129f549f6780
+            client-secret: VN85sEg1VzkxcoU3WS2LbMGpFSCwEFi1
+            redirect-uri: http://localhost:8080/login/oauth2/kakao
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image
