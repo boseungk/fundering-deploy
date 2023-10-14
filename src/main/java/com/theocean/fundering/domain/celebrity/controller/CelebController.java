@@ -22,4 +22,11 @@ public class CelebController {
         celebService.register(celebRequestDTO);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
+    @GetMapping("/celebs/{celebId}/posts")
+    public ResponseEntity<?> findAllPosting(@PathVariable Long celebId,
+                                            @RequestParam Long postId,
+                                            @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable){
+        PageResponse<CelebFundingResponseDTO> page = celebService.findAllPosting(celebId, postId, pageable);
+        return ResponseEntity.ok(ApiUtils.success(page));
+    }
 }
