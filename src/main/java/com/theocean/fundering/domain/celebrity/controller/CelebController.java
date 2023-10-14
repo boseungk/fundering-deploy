@@ -2,6 +2,7 @@ package com.theocean.fundering.domain.celebrity.controller;
 
 import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
 import com.theocean.fundering.domain.celebrity.dto.CelebFundingResponseDTO;
+import com.theocean.fundering.domain.celebrity.dto.CelebResponseDTO;
 import com.theocean.fundering.domain.celebrity.dto.PageResponse;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
 import com.theocean.fundering.global.utils.ApiUtils;
@@ -28,5 +29,10 @@ public class CelebController {
                                             @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable){
         PageResponse<CelebFundingResponseDTO> page = celebService.findAllPosting(celebId, postId, pageable);
         return ResponseEntity.ok(ApiUtils.success(page));
+    }
+    @GetMapping("/celebs/{celebId}")
+    public ResponseEntity<?> findByCelebId(@PathVariable Long celebId){
+        CelebResponseDTO responseDTO = celebService.findByCelebId(celebId);
+        return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 }
