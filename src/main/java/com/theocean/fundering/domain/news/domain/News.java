@@ -4,12 +4,14 @@ import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 import java.util.Objects;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -34,17 +36,13 @@ public class News extends AuditingFields {
     @Column
     private String imageUrls; //TODO: 추후 리팩토링 예정
 
-    @Column(nullable = false)
-    private boolean viewRestriction;
-
 
     @Builder
-    public News(Long postId, Long writerId, String title, String content, boolean viewRestriction) {
+    public News(Long postId, Long writerId, String title, String content) {
         this.postId = postId;
         this.writerId = writerId;
         this.title = title;
         this.content = content;
-        this.viewRestriction = viewRestriction;
     }
 
     public void updateImageUrls(String imageUrls) {

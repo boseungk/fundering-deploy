@@ -1,11 +1,10 @@
 package com.theocean.fundering.domain.news.controller;
 
-import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.news.dto.NewsRequest;
+import com.theocean.fundering.domain.news.dto.NewsResponse;
 import com.theocean.fundering.domain.news.service.NewsService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +26,17 @@ public class NewsController {
         newsService.createNews(writerId, postId, request);
 
         return ResponseEntity.ok(ApiUtils.success(null));
+    }
+
+    // (기능) 펀딩 업데이트 조회
+    @GetMapping("/posts/{postId}/updates")
+    public ResponseEntity<?> getUpdates(@PathVariable long postId,
+                                         @RequestParam(required = false, defaultValue = "0") long cursor,
+                                         @RequestParam(required = false, defaultValue = "6") int pageSize) {
+
+        NewsResponse.findAllDTO response = newsService.getNews(postId, cursor, pageSize);
+
+        return ResponseEntity.ok(ApiUtils.success(response));
     }
 
 }
