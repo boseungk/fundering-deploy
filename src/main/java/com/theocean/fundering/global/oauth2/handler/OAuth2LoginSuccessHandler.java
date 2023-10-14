@@ -1,7 +1,9 @@
 package com.theocean.fundering.global.oauth2.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.theocean.fundering.global.jwt.JwtProvider;
 import com.theocean.fundering.global.oauth2.CustomOAuth2User;
+import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +21,8 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
+    private final ObjectMapper objectMapper;
+    private final String SUCCESS_MESSAGE = "로그인에 성공했습니다.";
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -26,6 +30,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
             loginSuccess(response, oAuth2User);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+            String result = objectMapper.writeValueAsString(ApiUtils.success(SUCCESS_MESSAGE));
+            response.getWriter().write(result);
         } catch (Exception e) {
             throw e;
         }

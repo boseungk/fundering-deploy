@@ -36,11 +36,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SpringSecurityConfig {
     private final MemberRepository memberRepository;
-
     private final ObjectMapper objectMapper;
-
     private final LoginService loginService;
-
     private final JwtProvider jwtProvider;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
