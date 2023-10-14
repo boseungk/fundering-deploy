@@ -15,15 +15,11 @@ import java.util.stream.Collectors;
 public class PageResponse<T> {
     private final List<T> content;
     private final int currentPage;
-    private final int size;
-    private final boolean first;
-    private final boolean last;
+    private final boolean isLast;
 
     public PageResponse(Slice<T> sliceContent) {
         this.content = sliceContent.getContent();
         this.currentPage = sliceContent.getNumber() + 1;
-        this.size = sliceContent.getSize();
-        this.first = sliceContent.isFirst();
-        this.last = sliceContent.isLast();
+        this.isLast = sliceContent.isLast();
     }
 }
