@@ -37,7 +37,6 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                 .from(post)
                 .where(eqPostCelebId(celebId), ltPostId(postId))
                 .orderBy(post.postId.desc())
-                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         boolean hasNext = false;
@@ -60,7 +59,6 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                 .from(celebrity)
                 .where(ltCelebId(celebId))
                 .orderBy(celebrity.celebId.desc())
-                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
         boolean hasNext = false;
