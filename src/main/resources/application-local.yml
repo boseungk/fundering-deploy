@@ -31,3 +31,16 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   # org.hibernate.type: trace
+
+cloud:
+  aws:
+    s3:
+      bucket: "버킷 이름"
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      access-key: "{발급받은 access key}"
+      secret-key: "{발급받은 secret key}"
