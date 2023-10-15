@@ -4,11 +4,14 @@ import com.theocean.fundering.global.errors.exception.*;
 import com.theocean.fundering.global.utils.ApiUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 
@@ -54,6 +57,13 @@ public class GlobalExceptionHandler {
 
         ApiUtils.ApiResult<?> apiResult = ApiUtils.error(errorMessage, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(apiResult, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> accessDeniedError(AccessDeniedException e) {
+        ApiUtils.ApiResult<?> apiResult = ApiUtils.error("접근할 수 없습니다", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(apiResult, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
