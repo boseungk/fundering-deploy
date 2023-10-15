@@ -55,7 +55,7 @@ public class PostRequest {
     @Setter
     @NoArgsConstructor
     @ToString
-    public class PostEditDTO{
+    public static class PostEditDTO{
         private String title;
         private String content;
         private String thumbnail;
