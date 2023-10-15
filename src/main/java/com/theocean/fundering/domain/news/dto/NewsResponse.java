@@ -10,12 +10,12 @@ import java.util.List;
 public class NewsResponse {
     @Getter
     public static class findAllDTO {
-        private final List<NewsResponse.newsDTO> update;
+        private final List<NewsResponse.newsDTO> updates;
         private final Long cursor;
         private final boolean isLastPage;
 
-        public findAllDTO(List<NewsResponse.newsDTO> update, Long cursor, boolean isLastPage) {
-            this.update = update;
+        public findAllDTO(List<NewsResponse.newsDTO> updates, Long cursor, boolean isLastPage) {
+            this.updates = updates;
             this.cursor = cursor;
             this.isLastPage = isLastPage;
         }

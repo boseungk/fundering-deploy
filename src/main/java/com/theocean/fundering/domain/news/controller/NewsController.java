@@ -20,9 +20,8 @@ public class NewsController {
     @PostMapping("/posts/{postId}/updates")
     public ResponseEntity<?> createNews(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable long postId, @RequestBody NewsRequest.saveDTO request) {
 
+        // TODO: 추후 리팩토링 예정
         Long writerId = 1L;
-
-        // FundingUpdateRequest는 제목, 내용(마크다운), 후원자에게만 공개할 지 여부 등을 필드로 가집니다.
         newsService.createNews(writerId, postId, request);
 
         return ResponseEntity.ok(ApiUtils.success(null));

@@ -1,6 +1,5 @@
 package com.theocean.fundering.domain.news.service;
 
-import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.news.domain.News;
 import com.theocean.fundering.domain.news.dto.NewsRequest;
@@ -57,33 +56,29 @@ public class NewsService {
     // (기능) 업데이트 글 조회
     public NewsResponse.findAllDTO getNews(long postId, long cursor, int pageSize) {
 
-        // 1. 게시글 존재 여부 판별
         validatePostExistence(postId);
 
-        // 2. 댓글 조회 - postId가 일치하는 댓글 중 lastCommentId보다 PK값이 큰 댓글들을 pageSize+1개 가져온다
         List<News> updates;
         try {
             updates = customNewsRepository.getNewsList(postId, cursor, pageSize+1);
         } catch(Exception e) {
-            throw new Exception500("댓글 조회 도중 문제가 발생했습니다.");
+            throw new Exception500("업데이트 글 조회 도중에 문제가 발생했습니다.");
         }
 
 
-        // 3. findAllDTO의 isLastPage - pageSize와 댓글 수가 일치할 때를 대비해 위에서 하나 더 조회한 상태이다
+        // findAllDTO의 isLastPage - pageSize와 가져온 업데이트 글 수가 일치할 때를 대비해 위에서 하나 더 조회한 상태이다
         boolean isLastPage = updates.size() <= pageSize;
 
-
-        // 4. 마지막 페이지가 아닐 때는 pageSize만큼의 댓글만 사용한다
         if (!isLastPage) {
             updates = updates.subList(0, pageSize);
         }
 
 
-        // 5. findAllDTO의 comments
-        List<NewsResponse.newsDTO> newsDTOs = convertToNewsDTOs(updates);
+        // findAllDTO의 updates
+        List<NewsResponse.newsDTO> updateDTOs = convertToNewsDTOs(updates);
 
 
-        // 6. findAllDTO의 groupCursor, orderCursor
+        // findAllDTO의 cursor
         Long lastUpdate = null;
 
         if (!updates.isEmpty()) {
@@ -91,7 +86,7 @@ public class NewsService {
             lastUpdate = last.getNewsId();
         }
 
-        return new NewsResponse.findAllDTO(newsDTOs, lastUpdate, isLastPage);
+        return new NewsResponse.findAllDTO(updateDTOs, lastUpdate, isLastPage);
     }
 
 
