@@ -1,7 +1,5 @@
 package com.theocean.fundering.domain.post.dto;
 
-import com.theocean.fundering.domain.celebrity.domain.Celebrity;
-import com.theocean.fundering.domain.member.domain.Member;
 import com.theocean.fundering.domain.post.domain.Post;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,6 +59,7 @@ public class PostResponse {
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
+        private boolean isLast;
 
         public FindAllDTO(Post post){
             this.postId = post.getPostId();
@@ -74,6 +73,7 @@ public class PostResponse {
             this.deadline = post.getDeadline();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
+            this.isLast = false;
         }
     }
 
