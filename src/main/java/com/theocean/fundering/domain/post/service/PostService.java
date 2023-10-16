@@ -8,6 +8,7 @@ import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.repository.PostRepository;
 import com.theocean.fundering.global.utils.HTMLUtils;
+import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class PostService {
 
     }
 
-    public List<PostResponse.FindAllDTO> findAll(Long postId){
+    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId){
         var postList = postRepository.findAll(postId);
         var checkForNext = postRepository.findAll(postList.get(postList.size() - 1).getPostId() + 1);
         if (checkForNext == null)
@@ -48,7 +49,7 @@ public class PostService {
         return postList;
     }
 
-    public List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId){
+    public List<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId){
         var postList = postRepository.findAllByWriterId(postId, writerId);
         var checkForNext = postRepository.findAllByWriterId(postList.get(postList.size() - 1).getPostId() + 1, writerId);
         if (checkForNext == null)
@@ -66,6 +67,15 @@ public class PostService {
 
     public void deletePost(Long postId){
         postRepository.deleteByPostId(postId);
+    }
+
+    public List<PostResponse.FindAllDTO> searchPost(@Nullable Long postId, String keyword){
+        var postList = postRepository.findAllByKeyword(postId, keyword);
+        var checkForNext = postRepository.findAllByKeyword(postList.get(postList.size() - 1).getPostId() + 1, keyword);
+        if (checkForNext == null)
+            postList.get(postList.size() - 1).setLast(true);
+        return postList;
+
     }
 
 }

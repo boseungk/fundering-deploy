@@ -5,6 +5,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.theocean.fundering.domain.post.dto.PostResponse;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import static  com.theocean.fundering.domain.post.domain.QPost.post;
 
@@ -16,7 +18,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PostResponse.FindAllDTO> findAll(Long postId) {
+    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId) {
         return jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.title,
@@ -35,7 +37,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
     }
 
     @Override
-    public List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId) {
+    public List<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId) {
         return jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.title,
@@ -52,9 +54,27 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
                 .limit(12)
                 .fetch();
     }
+    @Override
+    public List<PostResponse.FindAllDTO> findAllByKeyword(@Nullable Long postId, String keyword){
+        return jpaQueryFactory
+                .select(Projections.bean(PostResponse.FindAllDTO.class,
+                        post.title,
+                        post.thumbnail,
+                        post.writer,
+                        post.celebrity,
+                        post.targetPrice,
+                        post.account,
+                        post.deadline,
+                        post.createdAt))
+                .from(post)
+                .where(ltPostId(postId), containKeyword(keyword))
+                .orderBy(post.postId.desc())
+                .limit(12)
+                .fetch();
+    }
 
 
-    private BooleanExpression ltPostId(Long postId){
+    private BooleanExpression ltPostId(@Nullable Long postId){
         if (postId == null){
             return null;
         }
@@ -63,5 +83,8 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
 
     private BooleanExpression eqWriter(Long writerId){
         return post.writer.userId.eq(writerId);
+    }
+    private BooleanExpression containKeyword(String keyword){
+        return post.title.contains(keyword);
     }
 }
