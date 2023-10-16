@@ -42,24 +42,23 @@ public class PostService {
 
     public List<PostResponse.FindAllDTO> findAll(Long postId){
         var postList = postRepository.findAll(postId);
-        var checkForNext = postRepository.findAll(postList.get(-1).getPostId() + 1);
+        var checkForNext = postRepository.findAll(postList.get(postList.size() - 1).getPostId() + 1);
         if (checkForNext == null)
-            postList.get(-1).setLast(true);
+            postList.get(postList.size() - 1).setLast(true);
         return postList;
     }
 
     public List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId){
         var postList = postRepository.findAllByWriterId(postId, writerId);
-        var checkForNext = postRepository.findAllByWriterId(postList.get(-1).getPostId() + 1, writerId);
+        var checkForNext = postRepository.findAllByWriterId(postList.get(postList.size() - 1).getPostId() + 1, writerId);
         if (checkForNext == null)
-            postList.get(-1).setLast(true);
+            postList.get(postList.size() - 1).setLast(true);
         return postList;
     }
     @Transactional
     public Long editPost(Long postId, PostRequest.PostEditDTO postEditDTO){
         Post postPS = postRepository.findByPostId(postId).orElseThrow();
         postPS.update(postEditDTO);
-
         return postId;
     }
 
