@@ -62,8 +62,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> accessDeniedError(AccessDeniedException e) {
-        ApiUtils.ApiResult<?> apiResult = ApiUtils.error("접근할 수 없습니다", HttpStatus.FORBIDDEN);
-        return new ResponseEntity<>(apiResult, HttpStatus.FORBIDDEN);
+        ApiUtils.ApiResult<?> apiResult = ApiUtils.error("로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiResult, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
