@@ -1,6 +1,5 @@
 package com.theocean.fundering.domain.news.service;
 
-import com.theocean.fundering.domain.member.repository.MemberRepository;
 import com.theocean.fundering.domain.news.domain.News;
 import com.theocean.fundering.domain.news.dto.NewsRequest;
 import com.theocean.fundering.domain.news.dto.NewsResponse;
@@ -25,7 +24,6 @@ public class NewsService {
   private final CustomNewsRepositoryImpl customNewsRepository;
   private final NewsRepository newsRepository;
   private final PostRepository postRepository;
-  private final MemberRepository memberRepository;
 
   // (기능) 업데이트 글 작성
   @Transactional
