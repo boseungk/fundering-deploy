@@ -3,6 +3,8 @@ package com.theocean.fundering.domain.comment.domain;
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.*;
 import java.util.Objects;
+
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,13 +42,13 @@ public class Comment extends AuditingFields {
   @Column(nullable = false)
   private boolean isDeleted;
 
-  @Column(nullable = false)
-  private int ref; // 댓글 조회시 분류를 위한 그룹핑 - 대댓글은 원댓글의 필드값을 따라가고, 원댓글의 경우 자신의 PK값을 갖는다
+  @Min(1) @Column(nullable = false)
+  private int ref; // 댓글 조회시 분류를 위한 그룹핑 - 대댓글은 원댓글의 필드값을 따라가고, 원댓글의 경우 1부터 시작한다.
 
-  @Column(nullable = false)
+  @Min(0) @Column(nullable = false)
   private int refOrder; // 같은 그룹내에서 댓글 순서 - 생성순, 원댓글은 0
 
-  @Column(nullable = false)
+  @Min(0) @Column(nullable = false)
   private int depth; // 화면에 표시되는 들여쓰기 수준 - 원댓글 0부터 시작
 
   @Builder

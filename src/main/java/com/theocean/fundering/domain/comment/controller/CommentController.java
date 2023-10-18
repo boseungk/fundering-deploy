@@ -3,6 +3,7 @@ package com.theocean.fundering.domain.comment.controller;
 import com.theocean.fundering.domain.comment.dto.CommentRequest;
 import com.theocean.fundering.domain.comment.dto.CommentResponse;
 import com.theocean.fundering.domain.comment.service.CommentService;
+import com.theocean.fundering.global.errors.exception.Exception400;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
 import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
@@ -39,6 +40,10 @@ public class CommentController {
       @RequestParam(required = false, defaultValue = "0") int lastRef,
       @RequestParam(required = false, defaultValue = "0") int lastOrder,
       @RequestParam(required = false, defaultValue = "5") int pageSize) {
+
+    if (pageSize <= 0) {
+      throw new Exception400("pageSize는 0보다 커야합니다.");
+    }
 
     CommentResponse.findAllDTO response =
         commentService.getComments(postId, lastRef, lastOrder, pageSize);
