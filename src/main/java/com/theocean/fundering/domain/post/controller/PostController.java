@@ -19,7 +19,7 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public ResponseEntity<?> findAll(@RequestParam(value = "postId") Long postId, @RequestParam(value = "pageSize") int pageSize){
+    public ResponseEntity<?> findAll(@RequestParam(value = "postId") Long postId, @RequestParam(required = false, defaultValue = "12", value = "pageSize") int pageSize){
         List<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId);
         ApiUtils.ApiResult<?> apiResult = ApiUtils.success(responseDTO);
 
