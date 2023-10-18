@@ -25,7 +25,7 @@ public class News extends AuditingFields {
   @Column(nullable = false)
   private Long writerId;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 100)
   private String title;
 
   @Column(nullable = false, columnDefinition = "TEXT")
