@@ -21,6 +21,7 @@ public class PostResponse {
         private String content;
         private String thumbnail;
         private int targetPrice;
+        private int currentAmount;
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
@@ -37,6 +38,7 @@ public class PostResponse {
             this.content = post.getContent();
             this.thumbnail = post.getThumbnail();
             this.targetPrice = post.getTargetPrice();
+            this.currentAmount = post.getAccount().getFundingAmount();
             this.deadline = post.getDeadline();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
@@ -56,6 +58,7 @@ public class PostResponse {
         private String title;
         private String thumbnail;
         private int targetPrice;
+        private int currentAmount;
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
@@ -70,6 +73,7 @@ public class PostResponse {
             this.title = post.getTitle();
             this.thumbnail = post.getThumbnail();
             this.targetPrice = post.getTargetPrice();
+            this.currentAmount = post.getAccount().getFundingAmount();
             this.deadline = post.getDeadline();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();

@@ -1,11 +1,13 @@
 package com.theocean.fundering.domain.post.repository;
 
 import com.theocean.fundering.domain.post.dto.PostResponse;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 
 public interface PostQuerydslRepository {
-    List<PostResponse.FindAllDTO> findAll(Long postId);
+    List<PostResponse.FindAllDTO> findAll(@Nullable Long postId);
 
-    List<PostResponse.FindAllDTO> findAllByWriterId(Long postId, Long writerId);
+    List<PostResponse.FindAllDTO> findAllByWriterId(@Nullable Long postId, Long writerId);
+    List<PostResponse.FindAllDTO> findAllByKeyword(@Nullable Long postId, String keyword);
 }
