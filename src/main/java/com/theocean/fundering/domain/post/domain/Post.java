@@ -40,7 +40,7 @@ public class Post extends AuditingFields {
     @Column(nullable = false)
     private String content;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private Account account;
 
     @Column
