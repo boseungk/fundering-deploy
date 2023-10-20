@@ -18,7 +18,7 @@ public class CelebService {
     public void register(CelebRequestDTO celebRequestDTO) {
         try{
             celebRepository.save(celebRequestDTO.mapToEntity());
-        }catch (Exception e){
+        }catch (RuntimeException e){
             throw new Exception500("셀럽 등록 실패");
         }
     }
