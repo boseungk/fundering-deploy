@@ -36,13 +36,13 @@ public class PostController {
     }
 
     @PostMapping("/posts/write")
-    public ResponseEntity<?> writePost(@RequestBody PostRequest.PostWriteDTO postWriteDTO, @RequestPart MultipartFile thumbnail){
+    public ResponseEntity<?> writePost(@RequestBody PostRequest.PostWriteDTO postWriteDTO, @RequestPart(value = "thumbnail") MultipartFile thumbnail){
         postService.writePost(postWriteDTO, thumbnail);
         return ResponseEntity.ok(ApiUtils.success(null));
     }
 
     @PutMapping("/posts/{postId}/edit")
-    public ResponseEntity<?> editPost(@PathVariable Long postId, @RequestBody PostRequest.PostEditDTO postEditDTO, @RequestPart(required = false) MultipartFile thumbnail){
+    public ResponseEntity<?> editPost(@PathVariable Long postId, @RequestBody PostRequest.PostEditDTO postEditDTO, @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail){
         Long editedPost = postService.editPost(postId, postEditDTO, thumbnail);
         return ResponseEntity.ok(ApiUtils.success(editedPost));
     }
@@ -58,6 +58,12 @@ public class PostController {
         var result = postService.searchPost(postId, keyword);
         return ResponseEntity.ok(ApiUtils.success(result));
     }
+
+//    @PostMapping("/posts/upload")
+//    public ResponseEntity<?> uploadTest(@RequestPart(value = "image") MultipartFile img){
+//        String result = postService.uploadTest(img);
+//        return ResponseEntity.ok(ApiUtils.success(result));
+//    }
 
 
 
