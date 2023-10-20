@@ -52,5 +52,9 @@ public class CommentResponse {
     public boolean getIsDeleted() {
       return isDeleted;
     }
+
+    public static commentDTO fromEntity(Comment comment, String nickname, String profileImage) {
+      return new commentDTO(comment, nickname, profileImage);
+    }
   }
 }

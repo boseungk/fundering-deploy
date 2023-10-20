@@ -29,9 +29,7 @@ public class CommentService {
   private final PostRepository postRepository;
   private static final int REPLY_LIMIT = 30;
 
-  /**
-   * (기능) 댓글 작성
-   */
+  /** (기능) 댓글 작성 */
   @Transactional
   public void createComment(
       final Long memberId, final Long postId, final CommentRequest.saveDTO request) {
@@ -98,9 +96,7 @@ public class CommentService {
     commentRepository.save(newComment);
   }
 
-  /**
-   * (기능) 댓글 목록 조회
-   */
+  /** (기능) 댓글 목록 조회 */
   public CommentResponse.findAllDTO getComments(
       final long postId, final String cursor, final int pageSize) {
 
@@ -129,15 +125,6 @@ public class CommentService {
     return new CommentResponse.findAllDTO(commentsDTOs, lastCursor, isLastPage);
   }
 
-  private CommentResponse.commentDTO createCommentsDTO(final Comment comment) {
-    final Member writer =
-        memberRepository
-            .findById(comment.getWriterId())
-            .orElseThrow(() -> new Exception404("존재하지 않는 회원입니다: " + comment.getWriterId()));
-
-    return new CommentResponse.commentDTO(comment, writer.getNickname(), writer.getProfileImage());
-  }
-
   // 게시글 존재 유무 체크
   private void validatePostExistence(final long postId) {
     if (!postRepository.existsById(postId)) {
@@ -145,14 +132,23 @@ public class CommentService {
     }
   }
 
+  // 댓글 DTO 변환
   private List<CommentResponse.commentDTO> convertToCommentDTOs(final List<Comment> comments) {
 
-    return comments.stream().map(this::createCommentsDTO).collect(Collectors.toList());
+    return comments.stream().map(this::createCommentDTO).collect(Collectors.toList());
   }
 
-  /**
-   * (기능) 댓글 삭제
-   */
+  private CommentResponse.commentDTO createCommentDTO(final Comment comment) {
+    final Member writer =
+        memberRepository
+            .findById(comment.getWriterId())
+            .orElseThrow(() -> new Exception404("존재하지 않는 회원입니다: " + comment.getWriterId()));
+
+    return CommentResponse.commentDTO.fromEntity(
+        comment, writer.getNickname(), writer.getProfileImage());
+  }
+
+  /** (기능) 댓글 삭제 */
   @Transactional
   public void deleteComment(final Long memberId, final Long postId, final Long commentId)
       throws RuntimeException {
