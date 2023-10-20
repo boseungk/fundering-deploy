@@ -19,7 +19,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "comment", indexes = {@Index(name = "index_comment_order", columnList = "commentOrder", unique = true)})
+@Table(name = "comment", indexes = {@Index(name = "index_comment_order", columnList = "commentOrder", unique = false)})
 @SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
 public class Comment extends AuditingFields {
 
