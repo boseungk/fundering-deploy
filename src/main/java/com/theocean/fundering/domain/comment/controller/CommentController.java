@@ -20,7 +20,7 @@ public class CommentController {
   private final CommentService commentService;
 
   // (기능) 댓글 작성
-  @PreAuthorize("hasRole('USER')")
+  //@PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
   @PostMapping("/posts/{postId}/comments")
   public ResponseEntity<?> createComment(
       @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -51,7 +51,7 @@ public class CommentController {
   }
 
   // (기능) 댓글 삭제
-  @PreAuthorize("hasRole('USER')")
+  //@PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
   @DeleteMapping("/posts/{postId}/comments/{commentId}")
   public ResponseEntity<?> deleteComment(
       @AuthenticationPrincipal CustomUserDetails userDetails,
