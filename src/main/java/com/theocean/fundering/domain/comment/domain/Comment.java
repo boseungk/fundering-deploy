@@ -58,6 +58,10 @@ public class Comment extends AuditingFields {
     return createdAt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
   }
 
+  public int getDepth() {
+    return (int) commentOrder.chars().filter(ch -> ch == '.').count();
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
