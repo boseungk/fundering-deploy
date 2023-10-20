@@ -1,8 +1,6 @@
 package com.theocean.fundering.domain.comment.dto;
 
 import com.theocean.fundering.domain.comment.domain.Comment;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import lombok.Getter;
 
@@ -12,15 +10,12 @@ public class CommentResponse {
   @Getter
   public static class findAllDTO {
     private final List<commentDTO> comments;
-    private final Integer refCursor;
-    private final Integer orderCursor;
+    private final String lastCursor;
     private final boolean isLastPage;
 
-    public findAllDTO(
-        List<commentDTO> comments, Integer refCursor, Integer orderCursor, boolean isLastPage) {
+    public findAllDTO(List<commentDTO> comments, String lastCursor, boolean isLastPage) {
       this.comments = comments;
-      this.refCursor = refCursor;
-      this.orderCursor = orderCursor;
+      this.lastCursor = lastCursor;
       this.isLastPage = isLastPage;
     }
 
@@ -37,8 +32,7 @@ public class CommentResponse {
     private final String writerName;
     private final String writerProfile;
     private final String content;
-    private final int ref;
-    private final int refOrder;
+    private final String cursor;
     private final int depth;
     private final boolean isDeleted;
     private final long createdAt;
@@ -49,19 +43,18 @@ public class CommentResponse {
       this.writerName = writerName;
       this.writerProfile = writerProfile;
       this.content = comment.getContent();
-      this.ref = comment.getRef();
-      this.refOrder = comment.getRefOrder();
+      this.cursor = comment.getCommentOrder();
       this.depth = comment.getDepth();
       this.isDeleted = comment.isDeleted();
-      this.createdAt = toEpochSecond(comment.getCreatedAt());
-    }
-
-    private long toEpochSecond(LocalDateTime localDateTime) {
-      return localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+      this.createdAt = comment.getEpochSecond();
     }
 
     public boolean getIsDeleted() {
       return isDeleted;
+    }
+
+    public static commentDTO fromEntity(Comment comment, String nickname, String profileImage) {
+      return new commentDTO(comment, nickname, profileImage);
     }
   }
 }

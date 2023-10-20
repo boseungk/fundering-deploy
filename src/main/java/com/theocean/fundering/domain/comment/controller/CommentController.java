@@ -9,7 +9,6 @@ import com.theocean.fundering.global.utils.ApiUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +19,7 @@ public class CommentController {
   private final CommentService commentService;
 
   // (기능) 댓글 작성
-  @PreAuthorize("hasRole('USER')")
+  // @PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
   @PostMapping("/posts/{postId}/comments")
   public ResponseEntity<?> createComment(
       @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -37,22 +36,20 @@ public class CommentController {
   @GetMapping("/posts/{postId}/comments")
   public ResponseEntity<?> getComments(
       @PathVariable long postId,
-      @RequestParam(required = false, defaultValue = "0") int lastRef,
-      @RequestParam(required = false, defaultValue = "0") int lastOrder,
+      @RequestParam(required = false, defaultValue = "0") String cursor,
       @RequestParam(required = false, defaultValue = "5") int pageSize) {
 
     if (pageSize <= 0) {
       throw new Exception400("pageSize는 0보다 커야합니다.");
     }
 
-    CommentResponse.findAllDTO response =
-        commentService.getComments(postId, lastRef, lastOrder, pageSize);
+    CommentResponse.findAllDTO response = commentService.getComments(postId, cursor, pageSize);
 
     return ResponseEntity.ok(ApiUtils.success(response));
   }
 
   // (기능) 댓글 삭제
-  @PreAuthorize("hasRole('USER')")
+  // @PreAuthorize("hasRole('USER')") -> TODO: JWT에 role 추가 필요
   @DeleteMapping("/posts/{postId}/comments/{commentId}")
   public ResponseEntity<?> deleteComment(
       @AuthenticationPrincipal CustomUserDetails userDetails,
