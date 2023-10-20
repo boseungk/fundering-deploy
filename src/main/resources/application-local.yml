@@ -42,5 +42,4 @@ cloud:
     stack:
       auto: false
     credentials:
-      access-key: ""
-      secret-key: ""
+      profile-name: default

@@ -1,14 +1,11 @@
 package com.theocean.fundering.domain.post.controller;
 
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.theocean.fundering.domain.post.dto.PostRequest;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import com.theocean.fundering.domain.post.service.PostService;
 import com.theocean.fundering.global.utils.ApiUtils;
-import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,11 +56,11 @@ public class PostController {
         return ResponseEntity.ok(ApiUtils.success(result));
     }
 
-//    @PostMapping("/posts/upload")
-//    public ResponseEntity<?> uploadTest(@RequestPart(value = "image") MultipartFile img){
-//        String result = postService.uploadTest(img);
-//        return ResponseEntity.ok(ApiUtils.success(result));
-//    }
+    @PostMapping("/posts/upload")
+    public ResponseEntity<?> uploadTest(@RequestPart(value = "image") MultipartFile img){
+        String result = postService.uploadTest(img);
+        return ResponseEntity.ok(ApiUtils.success(result));
+    }
 
 
 
