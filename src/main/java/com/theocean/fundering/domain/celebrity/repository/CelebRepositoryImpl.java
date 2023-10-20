@@ -12,8 +12,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
+import java.util.Objects;
 
-import static com.theocean.fundering.domain.celebrity.domain.QCelebrity.*;
+import static com.theocean.fundering.domain.celebrity.domain.QCelebrity.celebrity;
 import static com.theocean.fundering.domain.post.domain.QPost.post;
 
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
 
     @Override
     public Slice<CelebFundingResponseDTO> findAllPosting(final Long celebId, final Long postId, final Pageable pageable) {
+        Objects.requireNonNull(celebId, "celebId must not be null");
         final List<CelebFundingResponseDTO> contents = queryFactory
                 .select(Projections.constructor(CelebFundingResponseDTO.class,
                         post.postId,
@@ -45,6 +47,7 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
 
     @Override
     public Slice<CelebListResponseDTO> findAllCeleb(final Long celebId, final Pageable pageable) {
+        Objects.requireNonNull(celebId, "celebId must not be null");
         final List<CelebListResponseDTO> contents = queryFactory
                 .select(Projections.constructor(CelebListResponseDTO.class,
                         celebrity.celebId,
