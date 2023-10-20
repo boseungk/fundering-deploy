@@ -37,8 +37,7 @@ public class CommentController {
   @GetMapping("/posts/{postId}/comments")
   public ResponseEntity<?> getComments(
       @PathVariable long postId,
-      @RequestParam(required = false, defaultValue = "0") int lastRef,
-      @RequestParam(required = false, defaultValue = "0") int lastOrder,
+      @RequestParam(required = false, defaultValue = "0") String cursor,
       @RequestParam(required = false, defaultValue = "5") int pageSize) {
 
     if (pageSize <= 0) {
@@ -46,7 +45,7 @@ public class CommentController {
     }
 
     CommentResponse.findAllDTO response =
-        commentService.getComments(postId, lastRef, lastOrder, pageSize);
+        commentService.getComments(postId, cursor, pageSize);
 
     return ResponseEntity.ok(ApiUtils.success(response));
   }
