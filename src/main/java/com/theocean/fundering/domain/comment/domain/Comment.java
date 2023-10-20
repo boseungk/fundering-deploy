@@ -3,6 +3,9 @@ package com.theocean.fundering.domain.comment.domain;
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,6 +52,10 @@ public class Comment extends AuditingFields {
 
   public void updateCommentOrder(String commentOrder){
     this.commentOrder = commentOrder;
+  }
+
+  public long getEpochSecond() {
+    return createdAt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
   }
 
   @Override
