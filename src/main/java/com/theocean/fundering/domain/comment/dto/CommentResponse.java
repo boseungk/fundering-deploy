@@ -12,15 +12,13 @@ public class CommentResponse {
   @Getter
   public static class findAllDTO {
     private final List<commentDTO> comments;
-    private final Integer refCursor;
-    private final Integer orderCursor;
+    private final String lastCursor;
     private final boolean isLastPage;
 
     public findAllDTO(
-        List<commentDTO> comments, Integer refCursor, Integer orderCursor, boolean isLastPage) {
+        List<commentDTO> comments, String lastCursor, boolean isLastPage) {
       this.comments = comments;
-      this.refCursor = refCursor;
-      this.orderCursor = orderCursor;
+      this.lastCursor = lastCursor;
       this.isLastPage = isLastPage;
     }
 
@@ -37,9 +35,7 @@ public class CommentResponse {
     private final String writerName;
     private final String writerProfile;
     private final String content;
-    private final int ref;
-    private final int refOrder;
-    private final int depth;
+    private final String cursor;
     private final boolean isDeleted;
     private final long createdAt;
 
@@ -49,16 +45,14 @@ public class CommentResponse {
       this.writerName = writerName;
       this.writerProfile = writerProfile;
       this.content = comment.getContent();
-      this.ref = comment.getRef();
-      this.refOrder = comment.getRefOrder();
-      this.depth = comment.getDepth();
+      this.cursor = comment.getCommentOrder();
       this.isDeleted = comment.isDeleted();
-      this.createdAt = toEpochSecond(comment.getCreatedAt());
+      this.createdAt = comment.getEpochSecond();
     }
 
-    private long toEpochSecond(LocalDateTime localDateTime) {
-      return localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-    }
+//    private long toEpochSecond(LocalDateTime localDateTime) {
+//      return localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+//    }
 
     public boolean getIsDeleted() {
       return isDeleted;
