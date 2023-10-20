@@ -29,11 +29,11 @@ public class PostService {
     private final CelebRepository celebRepository;
 
     @Transactional
-    public void writePost(PostRequest.PostWriteDTO postWriteDTO, MultipartFile thumbnail){
-        postWriteDTO.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
-        Member writer = memberRepository.findByNickname(postWriteDTO.getWriter()).orElseThrow();
-        Celebrity celebrity = celebRepository.findById(postWriteDTO.getCelebId()).orElseThrow();
-        postRepository.save(postWriteDTO.toEntity(writer, celebrity));
+    public void writePost(PostRequest.PostWriteDTO dto, MultipartFile thumbnail){
+        dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
+        Member writer = memberRepository.findByNickname(dto.getWriter()).orElseThrow();
+        Celebrity celebrity = celebRepository.findById(dto.getCelebId()).orElseThrow();
+        postRepository.save(dto.toEntity(writer, celebrity));
     }
 
     public PostResponse.FindByPostIdDTO findByPostId(Long postId){
@@ -58,11 +58,11 @@ public class PostService {
         return postList;
     }
     @Transactional
-    public Long editPost(Long postId, PostRequest.PostEditDTO postEditDTO, @Nullable MultipartFile thumbnail){
+    public Long editPost(Long postId, PostRequest.PostEditDTO dto, @Nullable MultipartFile thumbnail){
         if (thumbnail != null)
-            postEditDTO.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
+            dto.setThumbnail(awss3Uploader.uploadToS3(thumbnail));
         Post postPS = postRepository.findById(postId).orElseThrow();
-        postPS.update(postEditDTO);
+        postPS.update(dto.getTitle(), dto.getContent(), dto.getThumbnail(), dto.getTargetPrice(), dto.getDeadline(), dto.getModifiedAt());
         return postId;
     }
 
