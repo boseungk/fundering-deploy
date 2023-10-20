@@ -31,7 +31,8 @@ public class CommentService {
 
   // (기능) 댓글 작성
   @Transactional
-  public void createComment(final Long memberId, final Long postId, final CommentRequest.saveDTO request) {
+  public void createComment(
+      final Long memberId, final Long postId, final CommentRequest.saveDTO request) {
 
     validateMemberAndPost(memberId, postId);
 
@@ -45,7 +46,8 @@ public class CommentService {
   }
 
   private void validateMemberAndPost(final Long memberId, final Long postId) {
-    if (!memberRepository.existsById(memberId)) throw new Exception404("존재하지 않는 회원입니다: " + memberId);
+    if (!memberRepository.existsById(memberId))
+      throw new Exception404("존재하지 않는 회원입니다: " + memberId);
 
     if (!postRepository.existsById(postId)) throw new Exception404("해당 게시글을 찾을 수 없습니다: " + postId);
   }
@@ -69,7 +71,8 @@ public class CommentService {
     commentRepository.save(newComment);
   }
 
-  private void createChildComment(final Long postId, final String parentCommentOrder, final Comment newComment) {
+  private void createChildComment(
+      final Long postId, final String parentCommentOrder, final Comment newComment) {
 
     if (parentCommentOrder.contains(".")) {
       throw new Exception400("대댓글에는 댓글을 달 수 없습니다.");
@@ -92,10 +95,9 @@ public class CommentService {
     commentRepository.save(newComment);
   }
 
-
   // (기능) 댓글 목록 조회 - 컨트롤러로 findAllDTO 리턴
   public CommentResponse.findAllDTO getComments(
-          final long postId, final String cursor, final int pageSize) {
+      final long postId, final String cursor, final int pageSize) {
 
     // 1. 게시글 존재 여부 판별
     validatePostExistence(postId);
@@ -150,7 +152,8 @@ public class CommentService {
 
   // (기능) 댓글 삭제
   @Transactional
-  public void deleteComment(final Long memberId, final Long postId, final Long commentId) throws RuntimeException {
+  public void deleteComment(final Long memberId, final Long postId, final Long commentId)
+      throws RuntimeException {
     final Comment comment =
         commentRepository
             .findById(commentId)

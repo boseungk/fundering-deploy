@@ -1,8 +1,6 @@
 package com.theocean.fundering.domain.comment.dto;
 
 import com.theocean.fundering.domain.comment.domain.Comment;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import lombok.Getter;
 
@@ -15,8 +13,7 @@ public class CommentResponse {
     private final String lastCursor;
     private final boolean isLastPage;
 
-    public findAllDTO(
-        List<commentDTO> comments, String lastCursor, boolean isLastPage) {
+    public findAllDTO(List<commentDTO> comments, String lastCursor, boolean isLastPage) {
       this.comments = comments;
       this.lastCursor = lastCursor;
       this.isLastPage = isLastPage;

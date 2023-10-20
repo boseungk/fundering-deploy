@@ -2,9 +2,6 @@ package com.theocean.fundering.domain.comment.domain;
 
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -14,12 +11,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "comment", indexes = {@Index(name = "index_comment_order", columnList = "commentOrder", unique = false)})
+@Table(
+    name = "comment",
+    indexes = {@Index(name = "index_comment_order", columnList = "commentOrder", unique = false)})
 @SQLDelete(sql = "UPDATE comment SET is_deleted = true WHERE comment_id = ?")
 public class Comment extends AuditingFields {
 
@@ -50,7 +48,7 @@ public class Comment extends AuditingFields {
     this.isDeleted = false;
   }
 
-  public void updateCommentOrder(String commentOrder){
+  public void updateCommentOrder(String commentOrder) {
     this.commentOrder = commentOrder;
   }
 

@@ -2,7 +2,6 @@ package com.theocean.fundering.domain.comment.repository;
 
 import static com.theocean.fundering.domain.comment.domain.QComment.comment;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.theocean.fundering.domain.comment.domain.Comment;
 import java.util.List;
@@ -17,11 +16,11 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
   @Override
   public List<Comment> getCommentList(Long postId, String cursor, int pageSize) {
-    return queryFactory.selectFrom(comment)
-            .where(comment.postId.eq(postId)
-                    .and(comment.commentOrder.gt(cursor)))
-            .orderBy(comment.commentOrder.asc())
-            .limit(pageSize)
-            .fetch();
+    return queryFactory
+        .selectFrom(comment)
+        .where(comment.postId.eq(postId).and(comment.commentOrder.gt(cursor)))
+        .orderBy(comment.commentOrder.asc())
+        .limit(pageSize)
+        .fetch();
   }
 }
