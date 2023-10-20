@@ -58,7 +58,4 @@ public class PostController {
         var result = postService.searchPost(postId, keyword);
         return ResponseEntity.ok(ApiUtils.success(result));
     }
-
-
-
 }
