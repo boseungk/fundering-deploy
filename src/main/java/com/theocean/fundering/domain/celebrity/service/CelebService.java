@@ -17,7 +17,7 @@ public class CelebService {
     @Transactional
     public void register(CelebRequestDTO celebRequestDTO) {
         try{
-            celebRepository.save(celebRequestDTO.getEntity());
+            celebRepository.save(celebRequestDTO.mapToEntity());
         }catch (Exception e){
             throw new Exception500("셀럽 등록 실패");
         }
