@@ -36,6 +36,7 @@ public class CommentResponse {
     private final String writerProfile;
     private final String content;
     private final String cursor;
+    private final int depth;
     private final boolean isDeleted;
     private final long createdAt;
 
@@ -46,13 +47,10 @@ public class CommentResponse {
       this.writerProfile = writerProfile;
       this.content = comment.getContent();
       this.cursor = comment.getCommentOrder();
+      this.depth = comment.getDepth();
       this.isDeleted = comment.isDeleted();
       this.createdAt = comment.getEpochSecond();
     }
-
-//    private long toEpochSecond(LocalDateTime localDateTime) {
-//      return localDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-//    }
 
     public boolean getIsDeleted() {
       return isDeleted;
