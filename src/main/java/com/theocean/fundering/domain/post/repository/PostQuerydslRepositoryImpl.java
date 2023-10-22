@@ -1,6 +1,5 @@
 package com.theocean.fundering.domain.post.repository;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -8,15 +7,14 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.theocean.fundering.domain.post.dto.PostResponse;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 
-import javax.print.DocFlavor;
 
 import static  com.theocean.fundering.domain.post.domain.QPost.post;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
@@ -86,20 +84,18 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
 
         /* 정렬 조건 추가 시 추가 작성
         * */
-        if(condition.equals("DEFAULT"))
+        if(Objects.equals(condition, "DEFAULT"))
             specifiers.add(new OrderSpecifier(Order.DESC, post.postId));
-        else if(condition.equals("DEADLINE"))
+        else if(Objects.equals(condition, "DEADLINE"))
             specifiers.add(new OrderSpecifier(Order.DESC, post.deadline));
-        else if(condition.equals("AMOUNT"))
+        else if(Objects.equals(condition, "AMOUNT"))
             specifiers.add(new OrderSpecifier(Order.DESC, post.account.fundingAmount));
 
         return specifiers.toArray(new OrderSpecifier[specifiers.size()]);
     }
 
     private BooleanExpression ltPostId(@Nullable Long postId){
-        if (postId == null){
-            return null;
-        }
+        if (postId == null) return null;
         return post.postId.lt(postId);
     }
 
