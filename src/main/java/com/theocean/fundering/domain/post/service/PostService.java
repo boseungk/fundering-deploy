@@ -42,9 +42,9 @@ public class PostService {
 
     }
 
-    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId){
-        var postList = postRepository.findAll(postId);
-        var checkForNext = postRepository.findAll(postList.get(postList.size() - 1).getPostId() + 1);
+    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId, String condition){
+        var postList = postRepository.findAll(postId, condition);
+        var checkForNext = postRepository.findAll(postList.get(postList.size() - 1).getPostId() + 1, condition);
         if (checkForNext == null)
             postList.get(postList.size() - 1).setLast(true);
         return postList;

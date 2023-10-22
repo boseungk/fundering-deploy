@@ -21,8 +21,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/posts")
-    public ResponseEntity<?> findAll(@RequestParam(value = "postId", required = false) Long postId){
-        List<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId);
+    public ResponseEntity<?> findAll(@RequestParam(value = "postId", required = false) Long postId, @RequestParam(value = "condition", defaultValue = "DEFAULT") String condition){
+        List<PostResponse.FindAllDTO> responseDTO = postService.findAll(postId, condition);
         return ResponseEntity.ok(ApiUtils.success(responseDTO));
     }
 
