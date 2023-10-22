@@ -79,7 +79,7 @@ public class PostService {
 
     }
 
-    public String uploadTest(MultipartFile img){
+    public String uploadImage(MultipartFile img){
         return awss3Uploader.uploadToS3(img);
     }
 
