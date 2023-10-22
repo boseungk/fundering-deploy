@@ -1,6 +1,8 @@
 package com.theocean.fundering.domain.post.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -8,8 +10,12 @@ import com.theocean.fundering.domain.post.dto.PostResponse;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
+
+import javax.print.DocFlavor;
+
 import static  com.theocean.fundering.domain.post.domain.QPost.post;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,7 +24,9 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId) {
+    public List<PostResponse.FindAllDTO> findAll(@Nullable Long postId, String condition) {
+        OrderSpecifier[] orderSpecifiers = createOrderSpecifier(condition);
+
         return jpaQueryFactory
                 .select(Projections.bean(PostResponse.FindAllDTO.class,
                         post.title,
@@ -31,7 +39,7 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
                         post.createdAt))
                 .from(post)
                 .where(ltPostId(postId))
-                .orderBy(post.postId.desc())
+                .orderBy(orderSpecifiers)
                 .limit(12)
                 .fetch();
     }
@@ -73,6 +81,20 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
                 .fetch();
     }
 
+    private OrderSpecifier[] createOrderSpecifier(String condition){
+        List<OrderSpecifier> specifiers = new ArrayList<>();
+
+        /* 정렬 조건 추가 시 추가 작성
+        * */
+        if(condition.equals("DEFAULT"))
+            specifiers.add(new OrderSpecifier(Order.DESC, post.postId));
+        else if(condition.equals("DEADLINE"))
+            specifiers.add(new OrderSpecifier(Order.DESC, post.deadline));
+        else if(condition.equals("AMOUNT"))
+            specifiers.add(new OrderSpecifier(Order.DESC, post.account.fundingAmount));
+
+        return specifiers.toArray(new OrderSpecifier[specifiers.size()]);
+    }
 
     private BooleanExpression ltPostId(@Nullable Long postId){
         if (postId == null){
@@ -87,4 +109,5 @@ public class PostQuerydslRepositoryImpl implements PostQuerydslRepository{
     private BooleanExpression containKeyword(String keyword){
         return post.title.contains(keyword);
     }
+
 }
