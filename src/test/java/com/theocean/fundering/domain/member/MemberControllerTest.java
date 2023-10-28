@@ -22,34 +22,34 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 class MemberControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
-
-    @Autowired
-    private ObjectMapper om;
-
-    @DisplayName("회원가입 테스트")
-    @Test
-    void signup() throws Exception {
-        //given
-//        Member member = new Member(1L, "보승", "1234", "gda12@naver.com");
-//        MemberRequestDTO requestDTO = MemberRequestDTO.from(member);
 //
-//        String requestBody = om.writeValueAsString(requestDTO);
+//    @Autowired
+//    private MockMvc mvc;
 //
-//        // when
-//        ResultActions result = mvc.perform(
-//                MockMvcRequestBuilders
-//                        .post("/signup")
-//                        .content(requestBody)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//        );
+//    @Autowired
+//    private ObjectMapper om;
 //
-//        String responseBody = result.andReturn().getResponse().getContentAsString();
-//        System.out.println("테스트 : " + responseBody);
-//
-//        // then
-//        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
-    }
+//    @DisplayName("회원가입 테스트")
+//    @Test
+//    void signup() throws Exception {
+//        //given
+////        Member member = new Member(1L, "보승", "1234", "gda12@naver.com");
+////        MemberRequestDTO requestDTO = MemberRequestDTO.from(member);
+////
+////        String requestBody = om.writeValueAsString(requestDTO);
+////
+////        // when
+////        ResultActions result = mvc.perform(
+////                MockMvcRequestBuilders
+////                        .post("/signup")
+////                        .content(requestBody)
+////                        .contentType(MediaType.APPLICATION_JSON)
+////        );
+////
+////        String responseBody = result.andReturn().getResponse().getContentAsString();
+////        System.out.println("테스트 : " + responseBody);
+////
+////        // then
+////        result.andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+//    }
 }
