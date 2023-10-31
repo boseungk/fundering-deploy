@@ -2,7 +2,7 @@
 FROM krmp-d2hub-idock.9rum.cc/goorm/gradle:7.3.1-jdk17
 
 # 작업 디렉토리 설정
-WORKDIR /home/gradle/project
+WORKDIR project
 
 # Spring 소스 코드를 이미지에 복사
 COPY . .
@@ -11,9 +11,11 @@ COPY . .
 RUN echo "systemProp.http.proxyHost=krmp-proxy.9rum.cc\nsystemProp.http.proxyPort=3128\nsystemProp.https.proxyHost=krmp-proxy.9rum.cc\nsystemProp.https.proxyPort=3128" > /root/.gradle/gradle.properties
 
 ## gradlew를 이용한 프로젝트 필드
-RUN chmod +x ./gradlew
+RUN gradle init
 
-RUN ./gradlew clean build
+RUN gradle wrapper
+
+RUN ./gradlew clean build -x test
 
 ## DATABASE_URL을 환경 변수로 삽입
 ENV DATABASE_URL=jdbc:mariadb://mariadb/krampoline
