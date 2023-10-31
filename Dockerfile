@@ -27,3 +27,4 @@ ENV DATABASE_URL=jdbc:mariadb://mariadb/krampoline
 
 ## 빌드 결과 jar 파일을 실행
 CMD ["java", "-jar", "-Dspring.profiles.active=prod", "fundering-0.0.1.jar"]
+
