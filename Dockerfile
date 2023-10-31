@@ -11,7 +11,7 @@ COPY . .
 RUN echo "systemProp.http.proxyHost=krmp-proxy.9rum.cc\nsystemProp.http.proxyPort=3128\nsystemProp.https.proxyHost=krmp-proxy.9rum.cc\nsystemProp.https.proxyPort=3128" > /root/.gradle/gradle.properties
 
 ## gradlew를 이용한 프로젝트 필드
-RUN chmod +x gradlew
+RUN chmod +x ./gradlew
 
 RUN ./gradlew clean build
 
@@ -19,4 +19,4 @@ RUN ./gradlew clean build
 ENV DATABASE_URL=jdbc:mariadb://mariadb/krampoline
 
 ## 빌드 결과 jar 파일을 실행
-CMD ["java", "-jar", "-Dspring.profiles.active=local", "/home/gradle/project/build/libs/fundering-0.0.1.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=prod", "/home/gradle/project/build/libs/fundering-0.0.1.jar"]
