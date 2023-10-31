@@ -5,7 +5,7 @@ FROM krmp-d2hub-idock.9rum.cc/goorm/gradle:7.3.1-jdk17
 # FROM mariadb:10.6.12
 
 # 작업 디렉토리 설정
-WORKDIR project
+WORKDIR /home/gradle/project
 
 # Spring 소스 코드를 이미지에 복사
 COPY . .
@@ -24,4 +24,4 @@ COPY --from=builder /home/gradle/project/build/libs/team14-backend-0.0.1-SNAPSHO
 ENV DATABASE_URL=jdbc:mariadb://mariadb/krampoline
 
 ## 빌드 결과 jar 파일을 실행
-CMD ["java", "-jar", "-Dspring.profiles.active=prod", "fundering-0.0.1.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=prod", "/home/gradle/project/build/libs/fundering-0.0.1.jar"]
