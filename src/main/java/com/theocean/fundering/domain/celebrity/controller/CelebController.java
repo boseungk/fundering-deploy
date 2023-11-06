@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CelebController {
     private final CelebService celebService;
-    @PostMapping("/celebs")
+    @PostMapping("/api/celebs")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> registerCeleb(@RequestBody @Valid final CelebRequestDTO celebRequestDTO, final Error error){
 //                                                @RequestPart(value = "thumbnail") MultipartFile thumbnail){
