@@ -67,7 +67,7 @@ public class CelebController {
         return ApiResult.success(responseDTO);
     }
 
-    @GetMapping("/celebs")
+    @GetMapping("/api/celebs")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllCelebs(@RequestParam final Long celebId,
                                            @RequestParam final String keyword,
