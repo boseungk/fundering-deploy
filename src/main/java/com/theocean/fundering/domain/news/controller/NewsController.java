@@ -1,44 +1,52 @@
 package com.theocean.fundering.domain.news.controller;
 
 import com.theocean.fundering.domain.news.dto.NewsRequest;
-import com.theocean.fundering.domain.news.dto.NewsResponse;
-import com.theocean.fundering.domain.news.service.NewsService;
+import com.theocean.fundering.domain.news.service.CreateNewsService;
+import com.theocean.fundering.domain.news.service.ReadNewsService;
 import com.theocean.fundering.global.jwt.userInfo.CustomUserDetails;
-import com.theocean.fundering.global.utils.ApiUtils;
+import com.theocean.fundering.global.utils.ApiResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 public class NewsController {
 
-  private final NewsService newsService;
+    private final CreateNewsService createNewsService;
+    private final ReadNewsService readNewsService;
 
-  // (기능) 펀딩 업데이트 작성
-  @PostMapping("/posts/{postId}/updates")
-  public ResponseEntity<?> createNews(
-      @AuthenticationPrincipal CustomUserDetails userDetails,
-      @PathVariable long postId,
-      @RequestBody NewsRequest.saveDTO request) {
+    // (기능) 펀딩 업데이트 작성
+    @PostMapping("/posts/{postId}/updates")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> createUpdates(
+            @AuthenticationPrincipal final CustomUserDetails userDetails,
+            @PathVariable final long postId,
+            @RequestBody final NewsRequest.saveDTO request) {
 
-    // TODO: 추후 리팩토링 예정
-    Long writerId = 1L;
-    newsService.createNews(writerId, postId, request);
+        final Long writerId = userDetails.getId();
+        createNewsService.createNews(writerId, postId, request);
 
-    return ResponseEntity.ok(ApiUtils.success(null));
-  }
+        return ApiResult.success(null);
+    }
 
-  // (기능) 펀딩 업데이트 조회
-  @GetMapping("/posts/{postId}/updates")
-  public ResponseEntity<?> getUpdates(
-      @PathVariable long postId,
-      @RequestParam(required = false, defaultValue = "0") long cursor,
-      @RequestParam(required = false, defaultValue = "6") int pageSize) {
+    // (기능) 펀딩 업데이트 조회
+    @GetMapping("/posts/{postId}/updates")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResult<?> readUpdates(
+            @PathVariable final long postId,
+            @RequestParam(required = false, defaultValue = "0") final long cursor,
+            @RequestParam(required = false, defaultValue = "6") final int pageSize) {
 
-    NewsResponse.findAllDTO response = newsService.getNews(postId, cursor, pageSize);
+        final var response = readNewsService.getNews(postId, cursor, pageSize);
 
-    return ResponseEntity.ok(ApiUtils.success(response));
-  }
+        return ApiResult.success(response);
+    }
 }

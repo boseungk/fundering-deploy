@@ -14,12 +14,10 @@ public class PostRequest {
     @NoArgsConstructor
     @ToString
     public static class PostWriteDTO { // 게시글 작성 DTO
-        private Long writerId;
-        private String writer;
         private Long celebId;
         private String title;
-        private String content;
-        private String thumbnail;
+        private String introduction;
+        private String thumbnailURL;
         private int targetPrice;
         private LocalDateTime deadline;
         private LocalDateTime createdAt;
@@ -29,21 +27,19 @@ public class PostRequest {
                     .writer(writer)
                     .celebrity(celebrity)
                     .title(title)
-                    .content(content)
-                    .thumbnail(thumbnail)
+                    .introduction(introduction)
+                    .thumbnail(thumbnailURL)
                     .targetPrice(targetPrice)
                     .deadline(deadline)
                     .build();
         }
 
         @Builder
-        public PostWriteDTO(Long writerId, String writer, Long celebId, String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline){
-            this.writer = writer;
-            this.writerId = writerId;
+        public PostWriteDTO(Long celebId, String title, String introduction, String thumbnail, int targetPrice, LocalDateTime deadline){
             this.celebId = celebId;
             this.title = title;
-            this.content = content;
-            this.thumbnail = thumbnail;
+            this.introduction = introduction;
+            this.thumbnailURL = thumbnail;
             this.targetPrice = targetPrice;
             this.deadline = deadline;
             this.createdAt = LocalDateTime.now();
@@ -57,7 +53,7 @@ public class PostRequest {
     @ToString
     public static class PostEditDTO{
         private String title;
-        private String content;
+        private String introduction;
         private String thumbnail;
         private int targetPrice;
         private LocalDateTime deadline;
@@ -66,16 +62,16 @@ public class PostRequest {
         public Post toEntity(){
             return Post.builder()
                     .title(title)
-                    .content(content)
+                    .introduction(introduction)
                     .thumbnail(thumbnail)
                     .targetPrice(targetPrice)
                     .deadline(deadline)
                     .build();
         }
         @Builder
-        public PostEditDTO(String title, String content, String thumbnail, int targetPrice, LocalDateTime deadline){
+        public PostEditDTO(String title, String introduction, String thumbnail, int targetPrice, LocalDateTime deadline){
             this.title = title;
-            this.content = content;
+            this.introduction = introduction;
             this.thumbnail = thumbnail;
             this.targetPrice = targetPrice;
             this.deadline = deadline;
