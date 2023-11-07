@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,5 +30,17 @@ public class Admin{
     public static class PK implements Serializable {
         Long memberId;
         Long postId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Admin admin)) return false;
+        return Objects.equals(memberId, admin.memberId) && Objects.equals(postId, admin.postId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(memberId, postId);
     }
 }

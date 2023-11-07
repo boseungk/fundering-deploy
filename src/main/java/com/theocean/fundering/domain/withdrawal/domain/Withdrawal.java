@@ -37,7 +37,7 @@ public class Withdrawal extends AuditingFields {
 
     // 사용처
     @Column(nullable = false)
-    private String usage;
+    private String purpose;
 
     // 입금계좌
     @Column(nullable = false)
@@ -59,10 +59,10 @@ public class Withdrawal extends AuditingFields {
 
     // 생성자
     @Builder
-    public Withdrawal(final Long applicantId, final Long postId, final String usage, final String depositAccount, final int withdrawalAmount) {
+    public Withdrawal(final Long applicantId, final Long postId, final String purpose, final String depositAccount, final int withdrawalAmount) {
         this.applicantId = applicantId;
         this.postId = postId;
-        this.usage = usage;
+        this.purpose = purpose;
         this.depositAccount = depositAccount;
         this.withdrawalAmount = withdrawalAmount;
         isApproved = false;
