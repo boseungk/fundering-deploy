@@ -4,13 +4,13 @@ server:
       charset: utf-8
       force: true
   port: 8080
-  forward-headers-strategy: framework
 spring:
   datasource:
     url: ${DATABASE_URL}?allowPublicKeyRetrieval=true&useSSL=false
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     password: root
+  jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -22,15 +22,3 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   # org.hibernate.type: trace
-
-cloud:
-  aws:
-    s3:
-      bucket: fundering-img
-    region:
-      static: ap-northeast-2
-      auto: false
-    stack:
-      auto: false
-#    credentials:
-#      profile-name: default

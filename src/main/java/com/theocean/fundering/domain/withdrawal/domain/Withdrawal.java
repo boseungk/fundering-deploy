@@ -1,5 +1,6 @@
 package com.theocean.fundering.domain.withdrawal.domain;
 
+import com.theocean.fundering.global.utils.ApprovalStatus;
 import com.theocean.fundering.global.utils.AuditingFields;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,10 +14,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.ZoneId;
 import java.util.Objects;
+import java.util.prefs.AbstractPreferences;
 
 @Entity
 @Table(name = "Withdrawal")
@@ -37,7 +40,7 @@ public class Withdrawal extends AuditingFields {
 
     // 사용처
     @Column(nullable = false)
-    private String purpose;
+    private String usage;
 
     // 입금계좌
     @Column(nullable = false)
@@ -50,7 +53,7 @@ public class Withdrawal extends AuditingFields {
 
     // 승인 여부
     @Column(nullable = false)
-    private Boolean isApproved;
+    private ApprovalStatus status;
 
     // 출금시 계좌 잔액
     @Min(0)
@@ -59,13 +62,13 @@ public class Withdrawal extends AuditingFields {
 
     // 생성자
     @Builder
-    public Withdrawal(final Long applicantId, final Long postId, final String purpose, final String depositAccount, final int withdrawalAmount) {
+    public Withdrawal(final Long applicantId, final Long postId, final String usage, final String depositAccount, final int withdrawalAmount) {
         this.applicantId = applicantId;
         this.postId = postId;
-        this.purpose = purpose;
+        this.usage = usage;
         this.depositAccount = depositAccount;
         this.withdrawalAmount = withdrawalAmount;
-        isApproved = false;
+        status = ApprovalStatus.PENDING;
     }
 
     public long getDepositTime() {
@@ -73,7 +76,11 @@ public class Withdrawal extends AuditingFields {
     }
 
     public void approveWithdrawal() {
-        isApproved = true;
+        status = ApprovalStatus.APPROVED;
+    }
+
+    public void denialWithdrawal(){
+        status = ApprovalStatus.PENDING;
     }
 
     public void updateBalance(final int balance) {

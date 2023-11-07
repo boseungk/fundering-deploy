@@ -34,7 +34,7 @@ public class WithdrawalService {
         final Withdrawal withdrawal = Withdrawal.builder()
                 .applicantId(memberId)
                 .postId(postId)
-                .purpose(request.getUsage())
+                .usage(request.getUsage())
                 .depositAccount(request.getDepositAccount())
                 .withdrawalAmount(request.getAmount())
                 .build();
