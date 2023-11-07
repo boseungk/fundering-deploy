@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 
 @Configuration
@@ -28,5 +29,9 @@ public class SwaggerConfig {
                         .title("Fundering")
                         .description("펀더링 프로젝트 Swagger UI")
                         .version("1.0.0"));
+    }
+    @Bean
+    ForwardedHeaderFilter forwardedHeaderFilter() {
+        return new ForwardedHeaderFilter();
     }
 }
