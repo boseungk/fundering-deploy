@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CelebController {
     private final CelebService celebService;
-    @PostMapping("/celebs")
+    @PostMapping("/api/celebs")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> registerCeleb(@RequestBody @Valid final CelebRequestDTO celebRequestDTO, final Error error){
+    public ApiResult<?> registerCeleb(@RequestBody @Valid final CelebRequestDTO celebRequestDTO){
 //                                                @RequestPart(value = "thumbnail") MultipartFile thumbnail){
 //        celebService.register(celebRequestDTO, thumbnail);
         celebService.register(celebRequestDTO);
@@ -67,7 +67,7 @@ public class CelebController {
         return ApiResult.success(responseDTO);
     }
 
-    @GetMapping("/celebs")
+    @GetMapping("/api/celebs")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllCelebs(@RequestParam("celebId") final Long celebId,
                                            @RequestParam("keyword") final String keyword,
