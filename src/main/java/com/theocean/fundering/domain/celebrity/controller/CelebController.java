@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CelebController {
     private final CelebService celebService;
-    @PostMapping("/api/celebs")
+    @PostMapping("/celebs")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> registerCeleb(@RequestBody @Valid final CelebRequestDTO celebRequestDTO, final Error error){
 //                                                @RequestPart(value = "thumbnail") MultipartFile thumbnail){
@@ -67,7 +67,7 @@ public class CelebController {
         return ApiResult.success(responseDTO);
     }
 
-    @GetMapping("/api/celebs")
+    @GetMapping("/celebs")
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> findAllCelebs(@RequestParam final Long celebId,
                                            @RequestParam final String keyword,
