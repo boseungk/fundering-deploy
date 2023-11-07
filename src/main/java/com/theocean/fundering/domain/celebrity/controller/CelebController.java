@@ -69,8 +69,8 @@ public class CelebController {
 
     @GetMapping("/celebs")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResult<?> findAllCelebs(@RequestParam final Long celebId,
-                                           @RequestParam final String keyword,
+    public ApiResult<?> findAllCelebs(@RequestParam("celebId") final Long celebId,
+                                           @RequestParam("keyword") final String keyword,
                                            @PageableDefault final Pageable pageable){
         final var page = celebService.findAllCeleb(celebId, keyword, pageable);
         return ApiResult.success(page);
