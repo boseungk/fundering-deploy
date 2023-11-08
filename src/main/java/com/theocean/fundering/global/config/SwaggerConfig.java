@@ -16,6 +16,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
+                .addServersItem(new Server().url("/"))
                 .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
                 .components(new Components()
                         .addSecuritySchemes("bearer-key", new SecurityScheme()
