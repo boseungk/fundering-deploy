@@ -16,7 +16,6 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .addServersItem(new Server().url("/"))
                 .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
                 .components(new Components()
                         .addSecuritySchemes("bearer-key", new SecurityScheme()
@@ -28,6 +27,8 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Fundering")
                         .description("펀더링 프로젝트 Swagger UI")
-                        .version("1.0.0"));
+                        .version("1.0.0"))
+                .addServersItem(new Server().url("/"));
     }
+
 }

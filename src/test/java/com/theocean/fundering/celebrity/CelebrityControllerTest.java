@@ -5,12 +5,11 @@ import com.theocean.fundering.domain.celebrity.controller.CelebController;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebCategory;
 import com.theocean.fundering.domain.celebrity.domain.constant.CelebGender;
-import com.theocean.fundering.domain.celebrity.dto.CelebRequestDTO;
+import com.theocean.fundering.domain.celebrity.dto.CelebRequest;
 import com.theocean.fundering.domain.celebrity.service.CelebService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -25,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(CelebController.class)
-@ImportAutoConfiguration(exclude = OAuth2ClientAutoConfiguration.class)
+@ImportAutoConfiguration(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
 class CelebrityControllerTest {
     private static final String CELEB_NAME = "아이유";
     private static final String PROFILE_IMAGE = "profile.jpg";
@@ -50,7 +49,7 @@ class CelebrityControllerTest {
     @Test
     void reigsterCeleb() throws Exception {
         //given
-        final CelebRequestDTO requestDTO = CelebRequestDTO.builder()
+        final CelebRequest.SaveDTO requestDTO = CelebRequest.SaveDTO.builder()
                 .celebName(celeb.getCelebName())
                 .celebGender(celeb.getCelebGender())
                 .celebCategory(celeb.getCelebCategory())
