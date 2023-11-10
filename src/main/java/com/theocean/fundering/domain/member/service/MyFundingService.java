@@ -1,5 +1,7 @@
 package com.theocean.fundering.domain.member.service;
 
+import com.theocean.fundering.domain.account.domain.Account;
+import com.theocean.fundering.domain.account.repository.AccountRepository;
 import com.theocean.fundering.domain.celebrity.domain.Celebrity;
 import com.theocean.fundering.domain.celebrity.repository.CelebRepository;
 import com.theocean.fundering.domain.celebrity.repository.FollowRepository;
@@ -34,6 +36,7 @@ public class MyFundingService {
     private final PostRepository postRepository;
     private final CelebRepository celebRepository;
     private final AdminRepository adminRepository;
+    private final AccountRepository accountRepository;
 
     public PageResponse<MyFundingResponse.HostDTO> findAllPostingByHost(final Long userId, final Pageable pageable) {
         final var page = myFundingRepository.findAllPostingByHost(userId, pageable);
@@ -42,6 +45,11 @@ public class MyFundingService {
 
     public PageResponse<MyFundingResponse.SupporterDTO> findAllPostingBySupporter(final Long userId, final Pageable pageable) {
         final var page = myFundingRepository.findAllPostingBySupporter(userId, pageable);
+        return new PageResponse<>(page);
+    }
+
+    public PageResponse<MyFundingResponse.HeartPostingDTO> findAllPostingByHeart(final Long userId, final Long postId, final Pageable pageable) {
+        final var page = myFundingRepository.findAllPostingByHeart(userId, postId, pageable);
         return new PageResponse<>(page);
     }
 
@@ -87,13 +95,18 @@ public class MyFundingService {
     public void approvalWithdrawal(final Long userId, final Long postId, final Long withdrawalId) {
         final List<Long> postIdList = adminRepository.findByUserId(userId);
         final boolean isAdmin = postIdList.stream().anyMatch(id -> id.equals(postId));
-        if (!isAdmin)
-            throw new Exception400("관리자가 아닙니다.");
+        if (!isAdmin) throw new Exception400("관리자가 아닙니다.");
         final Withdrawal withdrawal = withdrawalRepository.findById(withdrawalId).orElseThrow(
                 () -> new Exception400("출금 신청을 찾을 수 없습니다.")
         );
-        withdrawal.approveWithdrawal();
+        final Account account = accountRepository.findByPostId(postId).orElseThrow(
+                () -> new Exception400("")
+        );
+        final int balanceAfterWithdrawal = account.getBalance() - withdrawal.getWithdrawalAmount();
+        withdrawal.approveWithdrawal(balanceAfterWithdrawal);
         withdrawalRepository.save(withdrawal);
+        account.updateBalance(balanceAfterWithdrawal);
+        accountRepository.save(account);
     }
 
     @Transactional
@@ -108,4 +121,5 @@ public class MyFundingService {
         withdrawal.denyWithdrawal();
         withdrawalRepository.save(withdrawal);
     }
+
 }
