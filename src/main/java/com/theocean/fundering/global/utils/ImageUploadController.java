@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "AWS S3 Uploader", description = "AWS S3 업로드 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+//@RequestMapping("/api")
 public class ImageUploadController {
 
     private final AWSS3Uploader awss3Uploader;
