@@ -58,11 +58,9 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                             celebrity.celebCategory,
                             celebrity.celebGroup,
                             celebrity.profileImage,
-                            celebrity.followerCount,
-                            post.postId
+                            celebrity.followerCount
                     ))
                     .from(celebrity)
-                    .leftJoin(celebrity.post, post)
                     .where(gtCelebId(celebId), eqCelebApprovalStatus(), nameCondition(keyword).or(groupCondition(keyword)))
                     .orderBy(celebrity.celebId.desc())
                     .limit(pageable.getPageSize())
@@ -76,11 +74,9 @@ public class CelebRepositoryImpl implements CelebRepositoryCustom {
                         celebrity.celebCategory,
                         celebrity.celebGroup,
                         celebrity.profileImage,
-                        celebrity.followerCount,
-                        post.postId
+                        celebrity.followerCount
                 ))
                 .from(celebrity)
-                .leftJoin(celebrity.post, post)
                 .where(gtCelebId(celebId), eqCelebApprovalStatus())
                 .orderBy(celebrity.celebId.desc())
                 .limit(pageable.getPageSize())
