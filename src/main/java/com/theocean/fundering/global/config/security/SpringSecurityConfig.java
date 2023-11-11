@@ -30,6 +30,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 @RequiredArgsConstructor
 @Configuration
 @EnableMethodSecurity
@@ -86,10 +88,10 @@ public class SpringSecurityConfig {
 
     private CorsConfigurationSource configurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*"); // GET, POST, PUT, DELETE
-        configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용
-        configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+        configuration.addAllowedOriginPattern("*");
+        configuration.setAllowCredentials(true);
         configuration.addExposedHeader("Authorization");
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
