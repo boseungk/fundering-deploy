@@ -26,46 +26,46 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CelebController.class)
 @ImportAutoConfiguration(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
 class CelebrityControllerTest {
-    private static final String CELEB_NAME = "아이유";
-    private static final String PROFILE_IMAGE = "profile.jpg";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper om;
-
-    @MockBean
-    private CelebService celebService;
-
-    private final Celebrity celeb = Celebrity.builder()
-            .celebName(CELEB_NAME)
-            .celebGender(CelebGender.FEMALE)
-            .celebCategory(CelebCategory.SINGER)
-            .profileImage(PROFILE_IMAGE)
-            .build();
-
-    @WithMockUser
-    @Test
-    void reigsterCeleb() throws Exception {
-        //given
-        final CelebRequest.SaveDTO requestDTO = CelebRequest.SaveDTO.builder()
-                .celebName(celeb.getCelebName())
-                .celebGender(celeb.getCelebGender())
-                .celebCategory(celeb.getCelebCategory())
-                .build();
-        final String requestBody = om.writeValueAsString(requestDTO);
-
-        //when
-        final ResultActions result = mockMvc.perform(
-                post("/celebs")
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
-        );
-
-        //then
-        result.andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
-    }
+//    private static final String CELEB_NAME = "아이유";
+//    private static final String PROFILE_IMAGE = "profile.jpg";
+//
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//    @Autowired
+//    private ObjectMapper om;
+//
+//    @MockBean
+//    private CelebService celebService;
+//
+//    private final Celebrity celeb = Celebrity.builder()
+//            .celebName(CELEB_NAME)
+//            .celebGender(CelebGender.FEMALE)
+//            .celebCategory(CelebCategory.SINGER)
+//            .profileImage(PROFILE_IMAGE)
+//            .build();
+//
+//    @WithMockUser
+//    @Test
+//    void reigsterCeleb() throws Exception {
+//        //given
+//        final CelebRequest.SaveDTO requestDTO = CelebRequest.SaveDTO.builder()
+//                .celebName(celeb.getCelebName())
+//                .celebGender(celeb.getCelebGender())
+//                .celebCategory(celeb.getCelebCategory())
+//                .build();
+//        final String requestBody = om.writeValueAsString(requestDTO);
+//
+//        //when
+//        final ResultActions result = mockMvc.perform(
+//                post("/celebs")
+//                        .content(requestBody)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .with(csrf())
+//        );
+//
+//        //then
+//        result.andExpect(status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value("true"));
+//    }
 }

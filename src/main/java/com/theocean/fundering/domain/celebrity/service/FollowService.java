@@ -24,6 +24,7 @@ public class FollowService {
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다.")
         );
         followRepository.saveFollow(celebrity.getCelebId(), memberId);
+        celebrity.addFollowerCount();
         threadLocal.set(celebrity.addFollowerCount());
         celebRepository.save(threadLocal.get());
         threadLocal.remove();
@@ -36,7 +37,7 @@ public class FollowService {
                 () -> new Exception400("해당 셀럽을 찾을 수 없습니다.")
         );
         followRepository.saveUnFollow(celebrity.getCelebId(), memberId);
-        threadLocal.set(celebrity.minusFollowerCount());
+        threadLocal.set(celebrity.subtractFollowerCount());
         celebRepository.save(threadLocal.get());
         threadLocal.remove();
     }
