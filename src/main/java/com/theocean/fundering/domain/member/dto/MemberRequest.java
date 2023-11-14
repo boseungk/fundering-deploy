@@ -25,8 +25,8 @@ public class MemberRequest {
         }
     }
     @Getter
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class SettingDTO {
         private String nickname;
         private String phoneNumber;
