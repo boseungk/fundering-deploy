@@ -67,8 +67,7 @@ public class MemberController {
     @PostMapping(value = "/user/setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ApiResult<?> updateUserSetting(
-            @Valid @Schema(implementation = MemberRequest.SettingDTO.class)
-            @RequestPart("requestDTO") final MemberRequest.SettingDTO requestDTO,
+            @Valid @RequestPart("requestDTO") final MemberRequest.SettingDTO requestDTO,
             @RequestPart("thumbnail") final MultipartFile thumbnail,
             @AuthenticationPrincipal final CustomUserDetails userDetails,
             @Parameter(hidden = true) final Error error
